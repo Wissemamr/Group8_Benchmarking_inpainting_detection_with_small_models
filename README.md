@@ -1,0 +1,2 @@
+# Group8_Benchmarking_inpainting_detection_with_small_models
+Data Readiness and AI evaluation course project
