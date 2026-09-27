@@ -132,11 +132,103 @@ The predicted localization mask is compared against the ground-truth manipulatio
 
 ## 5. Datasets
 
-The benchmark currently uses the following datasets:
+The benchmark uses datasets specifically designed for the detection and localization of **AI-generated image inpainting**. The datasets are selected based on their scale, diversity of inpainting methods, availability of manipulation masks, and relevance to recent image-forensics research.
 
-### TGIF
+### 5.1 TGIF — Text-Guided Inpainting Forgery Dataset
 
-[Dataset description to be added]
+**Official repository:**
+https://github.com/IDLabMedia/tgif-dataset
+
+**Download:**
+https://cloud.ilabt.imec.be/index.php/s/xEeAzrY7ES9KA8o
+
+**Original paper:**
+[TGIF: Text-Guided Inpainting Forgery Dataset](https://arxiv.org/abs/2407.11566)
+
+TGIF (*Text-Guided Inpainting Forgery*) is a large-scale dataset specifically designed for studying the detection and localization of **text-guided image inpainting forgeries**.
+
+The dataset contains authentic images originating from **MS-COCO** and corresponding manipulated images generated using several text-guided inpainting methods, including:
+
+* **Stable Diffusion 2 (SD2)**
+* **Stable Diffusion XL (SDXL)**
+* **Adobe Firefly**
+
+The authentic images are sourced from **MS-COCO** and are distributed under the **CC BY 4.0** license. Images have resolutions of up to **1024 × 1024 pixels**.
+
+For each manipulation, TGIF can provide information about the manipulated region, making it suitable for both:
+
+1. **Image-level inpainting detection**
+2. **Pixel-level inpainting localization**
+
+#### Manipulation Types
+
+TGIF provides two representations of the generated content, when available:
+
+* **SP (Spliced/Partial):** the original image in which only the selected region has been replaced through inpainting.
+* **FR (Fully Regenerated):** a fully regenerated version of the image produced through the corresponding generative process.
+
+The **SP** version is particularly relevant to our benchmark because it directly represents the typical inpainting scenario: a localized region of an otherwise authentic image has been synthetically modified.
+
+---
+
+### TGIF2 Extension
+
+The original TGIF dataset was subsequently extended through **TGIF2: Extended Text-Guided Inpainting Forgery Dataset & Benchmark**.
+
+TGIF2 adds approximately **196K new manipulated images**, substantially increasing the scale and diversity of the benchmark.
+
+This extension allows us to investigate whether models trained on a large and diverse collection of inpainting manipulations can generalize across different image-generation methods and manipulation distributions.
+
+---
+
+### Dataset Statistics
+
+The following table summarizes the splits used in our benchmark.
+
+| Dataset                             | Training | Validation | Testing |       Total |
+| ----------------------------------- | -------: | ---------: | ------: | ----------: |
+| **Authentic images**                |    2,440 |        341 |     343 |   **3,124** |
+| **TGIF manipulated images**         |   58,560 |      8,184 |   8,232 |  **74,976** |
+| **TGIF2 manipulated images**        |  153,720 |     21,483 |  21,609 | **196,812** |
+| **TGIF + TGIF2 manipulated images** |  212,280 |     29,667 |  29,841 | **271,788** |
+
+The resulting benchmark therefore contains a substantial number of manipulated samples, with TGIF and TGIF2 providing complementary manipulation data.
+
+---
+
+### Why TGIF Was Selected
+
+TGIF was selected as one of the benchmark datasets for several reasons:
+
+#### 1. Large-scale dataset
+
+TGIF provides nearly **75K manipulated images**, while the TGIF2 extension adds approximately **197K additional manipulated images**. This makes the combined dataset sufficiently large for training and comparing multiple models.
+
+#### 2. Diversity of generative methods
+
+The dataset contains manipulations generated using different text-guided inpainting systems, including **SD2, SDXL, and Adobe Firefly**. This diversity is important for evaluating whether models learn generalizable traces of inpainting rather than artifacts specific to a single generation method.
+
+#### 3. Relevance to our research question
+
+Unlike datasets focused only on generic image manipulation, TGIF specifically targets **text-guided inpainting forgeries**, which directly matches the scope of our research question.
+
+#### 4. Detection and localization
+
+The dataset provides information about the manipulated regions, allowing us to evaluate both:
+
+* **Detection:** whether an image contains an inpainting manipulation.
+* **Localization:** whether the model can identify the manipulated pixels.
+
+This makes TGIF particularly suitable for our two-task benchmark.
+
+#### 5. Recent and established benchmark
+
+TGIF was introduced in a peer-reviewed information-forensics context and subsequently extended through **TGIF2**, providing a recent and substantially larger benchmark for text-guided inpainting forgery detection and localization.
+
+
+
+> **Note:** The exact subset, split strategy, preprocessing, and whether TGIF2 is included in the training or evaluation set will be specified in the experimental protocol to ensure a fair comparison between all models.
+
 
 ### SAGI-D
 
