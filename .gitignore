@@ -2,7 +2,9 @@
 __pycache__/
 *.py[codz]
 *$py.class
-
+# Downloaded model weights and generated evaluation outputs
+/ForMa/ForMa_weights/
+/ForMa/results/
 # C extensions
 *.so
 
@@ -216,3 +218,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Local TGIF dataset and standalone dataset samples
+/ForMa/data_tgif/
+/ForMa/*_mask*.png
