@@ -1,5 +1,6 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
+.uv-cache/
 *.py[codz]
 *$py.class
 # Downloaded model weights and generated evaluation outputs

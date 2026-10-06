@@ -173,6 +173,66 @@ are not TGIF results. The `data_tgif` directory was empty at implementation time
 
 ## Exploring the downloaded TGIF Photoshop-spliced test subset
 
+### Category evaluation into a shared Excel workbook
+
+From the repository root, with the existing ForMa inference environment active:
+
+```powershell
+uv pip install pandas openpyxl tqdm
+python ForMa/evaluate_tgif_category.py --category airplane
+python ForMa/evaluate_tgif_category.py --category bear
+```
+
+Both commands append to `ForMa/results/results_excel.xlsx`. Use one writer at a
+time and close the workbook in Excel while running. The console reports category
+image/source counts, bbox/segm counts, completed/remaining images, and a progress
+bar with elapsed time, estimated remaining time, and current IoU/F1.
+
+The `images` sheet is the shared per-image dataframe: category, source ID,
+generation variant, bbox/segm type, image and mask names and absolute paths,
+dimensions, hashes, checkpoint/settings, UTC timestamp, foreground fraction,
+soft-border pixel count, forward/processing time, TP/FP/FN/TN, pixel F1, Dice,
+IoU, precision, recall, specificity, and pixel accuracy. Processing time excludes
+Excel writing; forward time excludes loading, warmup, and preprocessing.
+
+The `category_summary` sheet resembles the localization table in `results.md`:
+model, generator, category, image/source counts, bbox:segm count ratio, aggregated
+scores, and timing. Each category has an `all` row plus separate bbox/segm rows.
+`macro_*` averages defined image scores; `micro_*` pools pixel confusion counts.
+Undefined per-image scores are blank, and `defined_*_count` records the macro
+denominators. Summaries cover completed rows, so interrupted/limited runs are
+partial results; `category_total_images` in the image sheet shows the full size.
+
+The `aggregated_results` sheet provides one row per category and evaluation
+configuration, combining bbox and segm images. It includes `number_of_samples`,
+source and mask-type counts, macro (per-image average) and micro (pooled pixel)
+localization metrics, defined-score counts, and mean inference time. Different
+evaluation configurations remain separate. It updates automatically on each
+save, including when rerunning an already completed category. Counts describe
+saved evaluations, so unfinished categories have partial aggregates.
+
+The workbook is saved after each image using a temporary file followed by
+replacement. Repeating a command skips matching completed images. File paths,
+image/mask hashes and evaluation settings determine identity; changed weights or
+thresholds create a separate evaluation ID and separate summaries. Historical
+rows are retained when inputs change. This evaluates only PS-sp testing images,
+using their matching Photoshop-adapted mask with values >127 as foreground.
+Prediction probabilities use >0.5 by default. It does not perform classification.
+
+Optional flags:
+
+```powershell
+# Small real-model check in a separate workbook
+python ForMa/evaluate_tgif_category.py --category bear --limit 1 --output ForMa/results/category_smoke.xlsx
+# Explicit execution settings
+python ForMa/evaluate_tgif_category.py --category bear --device cpu --threads 4 --input-size 512 --threshold 0.5
+```
+
+Use `--data-root` for another directory with the same TGIF archive layout and
+`--weights` for another compatible checkpoint. The Excel workbook is generated
+under the ignored results directory; `results.md` remains the collaborative table.
+
+
 The local download now has this layout:
 
 ```text
@@ -233,3 +293,63 @@ The current environment was recreated as Python 3.12 and required installing
 its inference dependencies again. Runtime versions are recorded in the report;
 its timings are not directly comparable with the earlier Python 3.10 / PyTorch
 1.13 synthetic check.
+
+
+
+
+## To run the ForMa model
+
+```
+>>> python ForMa/evaluate_tgif_category.py --category <category>
+```
+
+__________________________
+
+
+## Evaluation Results
+
+**Source:** `ts_excel.xlsx`
+
+> Macro metrics on a **0–1 scale**.  
+> BBox and segmentation variants are combined.  
+> Only evaluated images and categories are included. Configurations are shown separately.
+
+### Evaluation Summary
+
+- **Evaluation ID:** `bce894a835eecfa44c2cea8272f14c3ba7bfb64ba11efcd5d1c4544c4d29b7b0`
+- **Images:** 2,058
+- **Sources:** 343
+- **Categories:** 13
+
+### Per-Category Results
+
+| Category | Images | Sources | F1 | Recall | Precision | IoU | Dice | Specificity | Pixel Accuracy |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| airplane | 168 | 28 | 0.4318 | 0.3910 | 0.6632 | 0.3228 | 0.4318 | 0.9735 | 0.9412 |
+| bear | 120 | 20 | 0.4648 | 0.3993 | 0.7038 | 0.3452 | 0.4648 | 0.9797 | 0.9088 |
+| elephant | 210 | 35 | 0.4354 | 0.3562 | 0.6768 | 0.3246 | 0.4354 | 0.9895 | 0.9073 |
+| hair-drier | 12 | 2 | 0.4103 | 0.3287 | 0.6280 | 0.2700 | 0.4103 | 0.9851 | 0.9253 |
+| kite | 186 | 31 | 0.3488 | 0.3156 | 0.6081 | 0.2413 | 0.3488 | 0.9831 | 0.9464 |
+| scissors | 54 | 9 | 0.1444 | 0.1518 | 0.2057 | 0.0939 | 0.1444 | 0.9639 | 0.9193 |
+| sheep | 168 | 28 | 0.3079 | 0.2788 | 0.5111 | 0.2165 | 0.3079 | 0.9844 | 0.9269 |
+| skis | 264 | 44 | 0.0985 | 0.1571 | 0.1146 | 0.0615 | 0.0985 | 0.9691 | 0.9481 |
+| snowboard | 120 | 20 | 0.2170 | 0.3505 | 0.2094 | 0.1444 | 0.2170 | 0.9615 | 0.9471 |
+| sports-ball | 132 | 22 | 0.2458 | 0.3819 | 0.2536 | 0.1819 | 0.2458 | 0.9541 | 0.9420 |
+| stop-sign | 120 | 20 | **0.6128** | **0.5648** | **0.8029** | **0.4773** | **0.6128** | 0.9886 | **0.9520** |
+| tennis-racket | 282 | 47 | 0.2207 | 0.3479 | 0.2331 | 0.1474 | 0.2207 | 0.9608 | 0.9456 |
+| zebra | 222 | 37 | 0.3557 | 0.3085 | 0.5777 | 0.2487 | 0.3557 | 0.9750 | 0.8912 |
+
+### Overall Averages
+
+| Aggregation | F1 | Recall | Precision | IoU | Dice | Specificity | Pixel Accuracy |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| All images (equal image weight) | 0.3150 | 0.3277 | 0.4542 | 0.2259 | 0.3150 | 0.9739 | 0.9316 |
+| All categories (equal category weight) | 0.3303 | 0.3332 | 0.4760 | 0.2366 | 0.3303 | 0.9745 | 0.9309 |
+
+### Notes
+
+- **F1 and Dice are identical** in this evaluator.
+- Overall averages are **macro averages**, not pooled pixel-level metrics.
+- **All images (equal image weight):** each evaluated image contributes equally to the final average.
+- **All categories (equal category weight):** each of the 13 categories contributes equally, regardless of the number of images in that category.
+- BBox and segmentation variants are combined in these results.
