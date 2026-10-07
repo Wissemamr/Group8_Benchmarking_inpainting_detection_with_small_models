@@ -1,0 +1,97 @@
+{
+ "scheme": "stratified by category, source images drawn without replacement, whole families (1 authentic + 6 SD + 6 PS) kept",
+ "fraction": 0.8,
+ "base_seed": 2025,
+ "n_source_images": 343,
+ "index_csv": "results/index/all_images.csv",
+ "index_csv_sha256": "5307008fa4ebba9c924289a34d95ab68bc43c81b8cd8f7bbdf1363c8a9443264",
+ "resamples": {
+  "1": {
+   "seed": 2026,
+   "n_source_images": 275,
+   "n_images": 3575,
+   "by_generator": {
+    "SD": 1650,
+    "PS": 1650,
+    "real": 275
+   },
+   "sources_per_category": {
+    "airplane": 22,
+    "bear": 16,
+    "elephant": 28,
+    "hair drier": 2,
+    "kite": 25,
+    "scissors": 7,
+    "sheep": 22,
+    "skis": 35,
+    "snowboard": 16,
+    "sports ball": 18,
+    "stop sign": 16,
+    "tennis racket": 38,
+    "zebra": 30
+   },
+   "csv": "resample_1.csv",
+   "csv_sha256": "f5e430cbc6fa161f580d082b3a55374cdd98a235571f9f2b2ba0b8f5145a1a66"
+  },
+  "2": {
+   "seed": 2027,
+   "n_source_images": 275,
+   "n_images": 3575,
+   "by_generator": {
+    "SD": 1650,
+    "PS": 1650,
+    "real": 275
+   },
+   "sources_per_category": {
+    "airplane": 22,
+    "bear": 16,
+    "elephant": 28,
+    "hair drier": 2,
+    "kite": 25,
+    "scissors": 7,
+    "sheep": 22,
+    "skis": 35,
+    "snowboard": 16,
+    "sports ball": 18,
+    "stop sign": 16,
+    "tennis racket": 38,
+    "zebra": 30
+   },
+   "csv": "resample_2.csv",
+   "csv_sha256": "399cf281c7daf3309649ea99685e0ce8100c64c5d852ec0a125ab92443dde555"
+  },
+  "3": {
+   "seed": 2028,
+   "n_source_images": 275,
+   "n_images": 3575,
+   "by_generator": {
+    "SD": 1650,
+    "PS": 1650,
+    "real": 275
+   },
+   "sources_per_category": {
+    "airplane": 22,
+    "bear": 16,
+    "elephant": 28,
+    "hair drier": 2,
+    "kite": 25,
+    "scissors": 7,
+    "sheep": 22,
+    "skis": 35,
+    "snowboard": 16,
+    "sports ball": 18,
+    "stop sign": 16,
+    "tennis racket": 38,
+    "zebra": 30
+   },
+   "csv": "resample_3.csv",
+   "csv_sha256": "56a712c4ae0f01fe7bf67205e319503dc5daf7f139858b085eb84ed390f24a3a"
+  }
+ },
+ "pairwise_source_overlap": {
+  "1&2": 220,
+  "1&3": 225,
+  "2&3": 218
+ },
+ "sources_in_no_resample": 4
+}

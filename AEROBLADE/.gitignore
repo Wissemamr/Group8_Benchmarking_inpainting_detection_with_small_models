@@ -1,0 +1,11 @@
+# TGIF images/masks (download them, see README) and the AEROBLADE cache (reconstructions, LPIPS maps)
+data/
+cache/
+resamples/materialized/
+__pycache__/
+*.pyc
+# archives (data downloads, zipped copies) never belong in git
+*.zip
+*.tar
+*.tar.gz
+*.7z
