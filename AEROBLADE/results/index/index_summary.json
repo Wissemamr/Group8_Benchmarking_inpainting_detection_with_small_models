@@ -1,0 +1,119 @@
+{
+ "data_root": "/mnt/d/dev/Group8_Benchmarking_inpainting_detection_with_small_models/AEROBLADE/data/tgif",
+ "n_images": 4459,
+ "n_source_images": 343,
+ "by_generator": {
+  "SD": 2058,
+  "PS": 2058,
+  "real": 343
+ },
+ "by_mask_type": {
+  "bbox": 2058,
+  "segm": 2058,
+  "none": 343
+ },
+ "by_category": {
+  "airplane": 28,
+  "bear": 20,
+  "elephant": 35,
+  "hair drier": 2,
+  "kite": 31,
+  "scissors": 9,
+  "sheep": 28,
+  "skis": 44,
+  "snowboard": 20,
+  "sports ball": 22,
+  "stop sign": 20,
+  "tennis racket": 47,
+  "zebra": 37
+ },
+ "by_category_generator": {
+  "airplane": {
+   "SD": 168,
+   "PS": 168,
+   "real": 28
+  },
+  "bear": {
+   "SD": 120,
+   "PS": 120,
+   "real": 20
+  },
+  "elephant": {
+   "SD": 210,
+   "PS": 210,
+   "real": 35
+  },
+  "hair drier": {
+   "SD": 12,
+   "PS": 12,
+   "real": 2
+  },
+  "kite": {
+   "SD": 186,
+   "PS": 186,
+   "real": 31
+  },
+  "scissors": {
+   "SD": 54,
+   "PS": 54,
+   "real": 9
+  },
+  "sheep": {
+   "SD": 168,
+   "PS": 168,
+   "real": 28
+  },
+  "skis": {
+   "SD": 264,
+   "PS": 264,
+   "real": 44
+  },
+  "snowboard": {
+   "SD": 120,
+   "PS": 120,
+   "real": 20
+  },
+  "sports ball": {
+   "SD": 132,
+   "PS": 132,
+   "real": 22
+  },
+  "stop sign": {
+   "SD": 120,
+   "PS": 120,
+   "real": 20
+  },
+  "tennis racket": {
+   "SD": 282,
+   "PS": 282,
+   "real": 47
+  },
+  "zebra": {
+   "SD": 222,
+   "PS": 222,
+   "real": 37
+  }
+ },
+ "image_width": {
+  "count": 4459.0,
+  "mean": 941.9854227405248,
+  "std": 135.83071436081048,
+  "min": 539.0,
+  "25%": 800.0,
+  "50%": 1024.0,
+  "75%": 1024.0,
+  "max": 1024.0
+ },
+ "image_height": {
+  "count": 4459.0,
+  "mean": 754.6705539358601,
+  "std": 145.35735658522293,
+  "min": 518.0,
+  "25%": 681.0,
+  "50%": 698.0,
+  "75%": 768.0,
+  "max": 1024.0
+ },
+ "n_distinct_sizes": 114,
+ "index_csv_sha256": "5307008fa4ebba9c924289a34d95ab68bc43c81b8cd8f7bbdf1363c8a9443264"
+}

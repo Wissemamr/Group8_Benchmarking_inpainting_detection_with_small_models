@@ -1,0 +1,20 @@
+# Python 3.10 (conda env "aeroblade"); AEROBLADE's own pins, which this benchmark was run with.
+# The repository root uses uv / Python 3.12; this folder is self-contained and does not use it.
+torch==2.1.2
+torchvision==0.16.2
+diffusers==0.25.1
+transformers==4.37.2    # imported by diffusers' img2img module, which provides retrieve_latents
+huggingface-hub==0.20.2
+safetensors==0.4.1
+accelerate==0.26.1      # low-memory weight loading in diffusers
+lpips==0.1.4
+numpy==1.26.3
+pandas==2.1.4
+pyarrow==15.0.0
+pillow==10.2.0
+scipy==1.12.0
+scikit-image==0.22.0
+scikit-learn==1.4.0
+matplotlib==3.8.2
+PyYAML==6.0.1
+tqdm==4.66.1

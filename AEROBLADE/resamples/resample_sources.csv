@@ -1,0 +1,344 @@
+source_id,category,in_resample_1,in_resample_2,in_resample_3
+724,stop sign,1,1,1
+1761,airplane,1,1,1
+2473,skis,0,0,1
+5001,scissors,1,1,1
+5529,skis,1,1,0
+5992,sheep,0,1,1
+7784,kite,1,1,1
+11122,stop sign,0,1,1
+12062,sports ball,1,1,1
+16010,zebra,1,1,1
+17959,kite,0,0,1
+20059,zebra,1,1,1
+20247,bear,1,1,1
+21903,elephant,1,1,1
+22396,airplane,1,1,1
+22589,sheep,1,1,1
+22935,sports ball,1,0,1
+23359,snowboard,0,1,1
+24919,elephant,1,1,1
+30504,skis,1,1,1
+31269,zebra,1,1,1
+33104,skis,0,1,1
+33368,tennis racket,1,1,1
+36539,snowboard,1,1,0
+37988,tennis racket,1,1,1
+39480,tennis racket,1,1,1
+39914,kite,1,0,1
+39951,tennis racket,1,0,1
+42296,sports ball,1,1,1
+43314,skis,1,1,0
+44195,snowboard,1,1,1
+44652,airplane,1,1,1
+44699,sheep,1,1,1
+46804,sheep,1,1,1
+47740,kite,1,1,1
+48504,elephant,1,1,0
+51712,skis,0,1,0
+52412,airplane,1,1,1
+52462,zebra,1,1,1
+53624,elephant,1,1,1
+53626,skis,1,1,1
+54123,zebra,1,1,1
+55950,tennis racket,1,0,1
+60102,sports ball,1,1,1
+60770,zebra,1,0,1
+64523,tennis racket,1,1,1
+64718,tennis racket,0,1,0
+65736,tennis racket,1,1,1
+69106,zebra,1,1,1
+71711,airplane,1,1,1
+71756,bear,1,0,1
+74860,snowboard,1,1,1
+78915,tennis racket,1,0,1
+79144,bear,1,1,1
+79969,tennis racket,1,0,0
+80022,tennis racket,1,1,1
+80274,elephant,1,1,1
+80671,skis,1,1,1
+83113,elephant,1,1,1
+83540,skis,1,1,1
+85478,bear,0,1,0
+86755,skis,1,0,1
+89078,snowboard,0,1,1
+90284,tennis racket,1,1,1
+90631,airplane,1,1,1
+91619,stop sign,1,0,1
+91921,zebra,1,1,0
+94852,elephant,1,1,0
+94944,snowboard,1,1,1
+95155,snowboard,1,1,1
+95899,stop sign,1,1,1
+96427,tennis racket,1,0,1
+96825,skis,1,0,1
+97230,elephant,0,1,1
+97679,snowboard,0,1,0
+99024,scissors,1,1,1
+99054,airplane,1,1,0
+99242,skis,1,1,1
+100283,stop sign,1,1,1
+100723,stop sign,1,1,0
+104198,stop sign,0,1,1
+104603,bear,1,1,1
+104782,stop sign,1,1,1
+105923,elephant,0,1,1
+107851,elephant,1,0,0
+110211,zebra,1,1,1
+112298,tennis racket,1,1,1
+116589,zebra,1,1,0
+118921,skis,0,1,1
+119641,elephant,1,1,1
+119995,tennis racket,1,1,1
+125257,snowboard,1,1,1
+126137,tennis racket,1,1,1
+126216,elephant,0,0,0
+127530,tennis racket,1,0,1
+130586,kite,1,1,1
+134886,airplane,1,1,1
+135673,airplane,0,0,1
+136334,skis,1,1,0
+151629,tennis racket,1,1,1
+152686,tennis racket,0,1,1
+154213,scissors,1,1,1
+154425,kite,0,1,1
+154947,sheep,0,1,0
+156071,sheep,0,1,1
+157213,elephant,1,1,0
+158548,sheep,1,1,1
+159311,zebra,1,0,1
+162543,elephant,0,0,1
+162732,sports ball,1,0,1
+163746,airplane,1,0,1
+165500,bear,1,1,1
+166664,elephant,1,1,1
+173033,bear,1,1,1
+176606,sheep,1,1,1
+176901,skis,1,0,1
+178618,elephant,1,1,0
+179285,sports ball,1,1,0
+181303,kite,1,1,1
+181666,sheep,1,0,1
+182923,tennis racket,1,1,1
+183391,tennis racket,1,1,1
+185409,zebra,1,1,1
+186042,skis,1,1,1
+186345,kite,1,1,1
+187055,tennis racket,0,1,1
+189828,airplane,0,1,1
+190236,sports ball,0,0,1
+193743,tennis racket,1,1,1
+193884,stop sign,1,1,1
+196442,skis,0,1,1
+197388,skis,1,0,1
+198960,sheep,1,1,1
+199310,tennis racket,1,1,1
+199395,kite,1,1,0
+199977,airplane,1,1,1
+201676,zebra,1,1,1
+203546,bear,1,1,1
+203864,tennis racket,0,0,0
+208901,airplane,1,1,0
+212072,stop sign,1,0,1
+213593,stop sign,1,0,1
+214205,airplane,1,1,1
+215245,zebra,1,0,1
+217060,airplane,1,1,1
+217872,snowboard,1,1,1
+217948,bear,1,1,1
+218424,zebra,0,1,1
+225184,sheep,1,0,0
+225405,sports ball,1,0,1
+225946,stop sign,0,1,0
+229747,airplane,1,0,1
+230166,sheep,1,0,0
+232646,stop sign,1,1,1
+235778,kite,1,1,1
+236599,kite,1,1,1
+238013,sports ball,1,1,1
+238039,sheep,1,1,1
+239843,stop sign,1,1,1
+245915,elephant,1,1,1
+251824,scissors,1,1,1
+252507,skis,1,1,0
+255483,scissors,1,1,1
+256775,kite,1,1,1
+257624,sports ball,1,1,0
+259625,elephant,1,1,1
+263679,kite,1,1,1
+263860,elephant,1,0,1
+263966,sheep,0,1,1
+266409,skis,1,0,1
+266892,tennis racket,1,1,1
+269196,sheep,1,1,1
+270244,zebra,1,0,1
+271402,tennis racket,1,1,1
+272049,airplane,0,1,1
+286503,elephant,0,0,1
+286994,elephant,1,1,1
+288430,kite,0,1,1
+288685,sheep,1,0,0
+289960,kite,0,0,0
+290592,sheep,1,0,1
+293300,elephant,1,1,1
+293324,airplane,1,0,1
+294695,kite,1,1,1
+297343,stop sign,1,1,1
+297698,skis,1,1,1
+308476,sports ball,1,1,1
+308753,bear,1,0,1
+312586,bear,1,1,0
+312720,skis,1,1,1
+314294,elephant,1,1,0
+314709,skis,0,1,1
+318080,bear,1,1,1
+320743,elephant,1,1,1
+324715,scissors,0,1,0
+328601,sports ball,1,1,1
+329827,skis,1,1,1
+333697,stop sign,1,0,1
+338304,sheep,1,1,1
+340272,sheep,1,1,1
+341681,tennis racket,0,0,1
+341719,snowboard,1,0,1
+342397,skis,1,1,1
+343218,tennis racket,1,1,0
+343496,stop sign,1,1,1
+343937,snowboard,1,0,1
+347265,skis,1,1,1
+347930,sports ball,0,1,1
+348881,airplane,1,1,1
+350002,hair drier,1,1,1
+350405,snowboard,1,1,1
+350488,zebra,1,1,1
+351823,tennis racket,1,1,1
+357238,kite,1,1,1
+357888,kite,1,1,1
+361147,tennis racket,1,1,1
+364166,zebra,0,1,1
+368294,scissors,1,0,1
+368961,elephant,1,1,1
+369323,tennis racket,1,1,1
+369751,stop sign,1,1,0
+371552,sports ball,0,1,1
+373382,tennis racket,1,1,1
+374369,skis,1,1,1
+375763,sheep,1,1,0
+376112,skis,0,1,1
+377113,skis,0,1,1
+378453,zebra,0,1,0
+382009,tennis racket,1,1,0
+384670,tennis racket,1,1,0
+387916,snowboard,0,0,1
+389316,elephant,1,1,1
+389566,sheep,1,1,0
+398203,sports ball,0,1,1
+398742,sports ball,1,1,0
+400044,snowboard,1,1,1
+401250,skis,1,1,1
+403122,tennis racket,0,1,0
+406129,tennis racket,1,1,1
+406611,skis,1,1,1
+406997,sheep,1,1,1
+407298,sports ball,1,1,1
+407650,snowboard,1,1,1
+407868,kite,0,1,0
+409211,tennis racket,0,1,0
+410221,airplane,1,1,1
+410428,sheep,0,1,1
+410650,tennis racket,1,1,1
+410880,sports ball,1,1,1
+414133,stop sign,0,1,0
+414795,elephant,0,1,1
+424551,skis,0,1,1
+425906,snowboard,1,1,0
+426836,kite,1,1,1
+429761,tennis racket,1,1,0
+431693,tennis racket,1,1,1
+431727,bear,1,0,1
+433243,zebra,1,0,1
+433374,elephant,0,1,1
+433515,kite,1,1,1
+438862,sports ball,1,1,1
+438876,tennis racket,0,1,1
+445248,elephant,1,1,1
+445602,skis,1,1,1
+447313,zebra,0,1,1
+447465,snowboard,1,1,0
+449406,zebra,1,1,0
+449579,tennis racket,1,1,1
+449996,airplane,1,0,1
+451144,skis,1,1,0
+451714,skis,1,1,0
+453981,bear,1,1,1
+457559,sports ball,1,1,1
+459809,kite,0,1,1
+461036,bear,1,1,0
+461405,sheep,1,1,1
+463690,sports ball,1,1,1
+464144,skis,1,1,1
+464872,zebra,1,1,0
+465180,elephant,1,1,1
+466602,skis,1,1,1
+468965,kite,1,0,1
+469174,airplane,0,1,1
+469828,skis,1,0,0
+470952,skis,1,1,1
+471450,bear,0,1,1
+471789,kite,1,0,0
+473121,skis,1,1,0
+473974,zebra,0,1,0
+474028,sports ball,1,1,0
+474170,elephant,1,0,1
+474881,sheep,0,1,1
+475191,tennis racket,1,0,1
+484296,zebra,1,0,1
+485027,tennis racket,0,1,1
+488270,airplane,1,1,0
+491613,zebra,0,1,1
+492968,snowboard,1,1,1
+493019,zebra,1,1,1
+493284,elephant,1,1,1
+494759,kite,1,1,1
+500716,scissors,1,1,1
+501243,zebra,1,1,1
+502599,airplane,1,1,0
+504635,zebra,1,1,0
+508586,zebra,1,1,1
+509735,zebra,1,0,1
+514797,kite,1,1,1
+516316,zebra,1,1,1
+521231,bear,1,1,0
+522889,tennis racket,1,1,1
+525322,airplane,0,1,1
+534394,sheep,1,1,1
+535578,sheep,1,1,1
+541055,skis,1,0,1
+544444,skis,1,1,1
+545129,zebra,1,1,1
+545407,airplane,0,1,0
+545730,zebra,0,1,1
+546011,zebra,1,1,1
+549738,kite,1,0,1
+550322,scissors,0,0,0
+552612,sheep,1,0,1
+554156,tennis racket,1,1,1
+556765,elephant,1,1,1
+560266,bear,0,1,1
+561958,skis,1,0,1
+562121,zebra,1,1,1
+563349,snowboard,1,0,1
+564133,elephant,1,1,1
+565624,elephant,1,0,1
+567432,airplane,1,0,1
+569976,hair drier,1,1,1
+570688,kite,1,1,0
+570756,kite,1,1,1
+571857,airplane,1,1,0
+572517,bear,0,0,1
+573258,skis,1,1,1
+573391,bear,1,1,1
+576654,kite,1,1,1
+577149,zebra,1,1,1
+577959,kite,1,1,0
+579893,stop sign,1,1,1
