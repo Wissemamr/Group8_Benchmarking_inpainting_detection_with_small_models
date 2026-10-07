@@ -353,3 +353,21 @@ __________________________
 - **All images (equal image weight):** each evaluated image contributes equally to the final average.
 - **All categories (equal category weight):** each of the 13 categories contributes equally, regardless of the number of images in that category.
 - BBox and segmentation variants are combined in these results.
+
+
+
+
+Image:
+ps-sp_testing/testing/hair-drier/
+350002_mask_bbox.png_ps_0.png
+
+Ground-truth mask:
+masks_testing/testing/hair drier/
+350002_mask_bbox.png_ps_mask.png
+
+
+The mask is not given to ForMa as input. The process is:
+1. Give the manipulated RGB image to ForMa.
+2. Obtain its predicted manipulation map.
+3. Resize that prediction to the original image dimensions using nearest-neighbor interpolation.
+4. Compare it pixel by pixel against the ground-truth mask.
