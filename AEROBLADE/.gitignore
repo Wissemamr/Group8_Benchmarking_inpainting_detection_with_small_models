@@ -4,3 +4,8 @@ cache/
 resamples/materialized/
 __pycache__/
 *.pyc
+# archives (data downloads, zipped copies) never belong in git
+*.zip
+*.tar
+*.tar.gz
+*.7z

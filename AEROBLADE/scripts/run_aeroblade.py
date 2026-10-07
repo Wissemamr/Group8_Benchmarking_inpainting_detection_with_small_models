@@ -15,7 +15,8 @@ Everything goes to cache/<image_size>_seed<seed>/:
 Resumable: images with a record and a map file are skipped, so an interrupted run (or a run on
 another machine with --shard i/n, whose cache folder is copied back) just continues. Images are
 processed family by family (see dataset.family_order), so any prefix is a usable benchmark.
-CPU only was tested; at 512x512 one image takes ~15 s with the SD2 autoencoder on 6 threads.
+Runs on a CUDA GPU when one is available (--device auto, the default) and otherwise on the CPU, where
+one 512x512 image takes ~17 s with the SD2 autoencoder on 6 threads. Computation is fp32 on both.
 """
 
 from __future__ import annotations
@@ -78,13 +79,19 @@ def main() -> None:
     p.add_argument("--shard", default="0/1", help="i/n: process source images i, i+n, i+2n, ... of the order")
     p.add_argument("--aes", nargs="+", choices=list(AUTOENCODERS), help="override config model.aes")
     p.add_argument("--threads", type=int, help="torch intra-op threads (config: run.threads)")
-    p.add_argument("--device", help="cpu (tested) or cuda (config: run.device)")
+    p.add_argument("--device", help="auto (cuda if available, else cpu), cuda, cuda:N or cpu "
+                                    "(config: run.device)")
     args = p.parse_args()
 
     cfg = load_config(args.config)
     m, run = cfg["model"], cfg["run"]
     aes = args.aes or m["aes"]
-    device = args.device or run["device"]
+    device = str(args.device or run.get("device", "auto"))
+    if device == "auto":
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+    if device.startswith("cuda") and not torch.cuda.is_available():
+        sys.exit(f"--device {device} requested but this PyTorch build sees no CUDA GPU "
+                 f"(torch {torch.__version__}); run scripts/check_env.py")
     threads = args.threads or run["threads"]
     size, seed, layer = int(m["image_size"]), int(m["seed"]), int(m["lpips_layer"])
     pad_detect, pad_map = int(m["lpips_pad_detect"]), int(m["lpips_pad_map"])
@@ -124,12 +131,15 @@ def main() -> None:
                 or not (cache / "maps" / ae / row.category / f"{Path(row.file).stem}.npy").exists()]
 
     work = [(row, need) for row in todo.itertuples() if (need := pending(row))]
+    where = (f"{device} ({torch.cuda.get_device_name(torch.device(device))})" if device.startswith("cuda")
+             else f"{device}, {torch.get_num_threads()} threads")
     print(f"{len(todo)} images in {len(sources)} source images (shard {shard_i}/{shard_n}) | "
-          f"AEs {'+'.join(aes)} | {size}x{size} | {device}, {torch.get_num_threads()} threads | "
+          f"AEs {'+'.join(aes)} | {size}x{size} | {where} | "
           f"{len(todo) - len(work)} already done, {len(work)} to do", flush=True)
 
     run_info = {
-        "label": label, "started_at": started_at.isoformat(), "args": vars(args) | {"config": str(args.config)},
+        "label": label, "started_at": started_at.isoformat(), "device": device,
+        "args": vars(args) | {"config": str(args.config)},
         "config": cfg, "config_sha256": sha256_json(cfg), "aes": {a: AUTOENCODERS[a].repo_id for a in aes},
         "n_images_in_scope": len(todo), "n_images_todo": len(work), "environment": environment_info(),
         "finished": False,
@@ -213,6 +223,7 @@ def main() -> None:
                     write_run({"progress": {"images_done_this_run": n_done, "images_todo": len(work),
                                             "elapsed_s": time.perf_counter() - wall_start}})
     except KeyboardInterrupt:
+        interrupted = True
         print("\ninterrupted; progress is saved, re-run the same command to continue", flush=True)
     finally:
         elapsed = time.perf_counter() - wall_start

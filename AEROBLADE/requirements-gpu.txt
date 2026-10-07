@@ -1,0 +1,9 @@
+# NVIDIA GPU install, Windows or Linux:   pip install -r requirements-gpu.txt
+# Same versions as requirements.txt, but PyTorch comes as its CUDA 12.1 build. On Windows, plain
+# `pip install torch==2.1.2` installs the CPU-only build, so the GPU would sit unused.
+# Needs an NVIDIA driver that supports CUDA 12.1 (driver 530 or newer; `nvidia-smi` shows it).
+# RTX 50-series (Blackwell) GPUs are too new for torch 2.1.2: see README, "Run on a GPU".
+--extra-index-url https://download.pytorch.org/whl/cu121
+torch==2.1.2+cu121
+torchvision==0.16.2+cu121
+-r requirements.txt

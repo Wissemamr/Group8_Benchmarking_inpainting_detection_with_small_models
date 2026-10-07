@@ -107,6 +107,58 @@ the wall-clock of each compute invocation, the model load times and the hardware
 `results/*/run_summary.json`. A resample reuses the full run's per-image inference, so its inference time is the sum over
 its own images; `localization_pixel_metrics_seconds_sum` and the `*_aggregation_seconds` fields give the evaluation cost.
 
+## Run on a GPU (another machine)
+
+Nothing here is tied to one machine, and the data and the cache are not in git. On an NVIDIA GPU the run uses
+the GPU by itself (`run.device: auto`), with the same fp32 computation as on the CPU. Windows works natively
+(no WSL needed), as does Linux.
+
+1. **Code**
+
+   ```bash
+   git clone https://github.com/Wissemamr/Group8_Benchmarking_inpainting_detection_with_small_models
+   cd Group8_Benchmarking_inpainting_detection_with_small_models
+   git checkout aeroblade-benchmark
+   cd AEROBLADE
+   ```
+
+2. **Environment** (Python 3.10; on Windows use the Anaconda Prompt, or a `python -m venv` environment)
+
+   ```bash
+   conda create -n aeroblade python=3.10 -y
+   conda activate aeroblade
+   pip install -r requirements-gpu.txt        # CUDA build of PyTorch; requirements.txt alone is CPU-only on Windows
+   ```
+
+   RTX 50-series (Blackwell) cards are too new for torch 2.1.2; `check_env.py` reports it. For them, install a newer
+   PyTorch on top: `pip install --upgrade torch==2.7.1 torchvision==0.22.1 --index-url https://download.pytorch.org/whl/cu128`
+   (not tested with the pinned diffusers; run `check_env.py --bench` afterwards).
+
+3. **Data** (4.6 GB, not in git). Copy the TGIF testing files into `data/tgif/` with this layout. The quickest way is
+   copying the `data/tgif/` folder from a machine that already has it; otherwise download `orig`, `SD2-sp`, `PS-sp` and
+   `masks` (testing split) from the TGIF link in `../README.md`.
+
+   ```
+   data/tgif/orig/testing/<category>/<id>_orig.png
+   data/tgif/sd2-sp/testing/<category>/<id>_mask_<bbox|segm>.png_ps_mask.png_sd2_<0-2>.png
+   data/tgif/ps-sp/testing/<category>/<id>_mask_<bbox|segm>.png_ps_<0-2>.png
+   data/tgif/masks/testing/<category>/<id>_mask_<bbox|segm>.png_ps_mask.png
+   ```
+
+4. **Check**: `python scripts/check_env.py --bench`. It checks the packages, the GPU (and that PyTorch can use it),
+   that every image and mask of the index is present, the free disk space, and times the SD2 autoencoder on this
+   machine to estimate the full run. It should end with `The run will use: cuda`.
+
+5. **Run**: `python scripts/run_all.py`. It does index → resamples → AEROBLADE → evaluation, prints progress, and
+   Ctrl+C pauses it (the same command continues). A quick test first: `python scripts/run_all.py --max-sources 5`.
+
+6. **Bring the results back**: `results/` (the dataframes and tables, a few MB) and, for the timing record,
+   `cache/512_seed1/records/` and `cache/512_seed1/runs/`. Every record notes the machine (file name) and the run
+   file notes the GPU, so GPU and CPU timings stay distinguishable.
+
+To split the work between two machines, run with `--shard 0/2` on one and `--shard 1/2` on the other, copy one
+machine's `cache/512_seed1/` into the other's (file names do not collide) and run `python scripts/evaluate.py` there.
+
 ## Resume and backup
 
 The full pass takes ~21 h on a laptop CPU, so nothing is lost if it stops. Every image is saved as it finishes (a
@@ -127,13 +179,15 @@ closing the terminal, killing the process, a reboot or a WSL restart costs at mo
 ## Reproduce
 
 ```bash
-conda create -n aeroblade python=3.10 && conda activate aeroblade && pip install -r requirements.txt
+conda create -n aeroblade python=3.10 && conda activate aeroblade
+pip install -r requirements.txt            # CPU; with an NVIDIA GPU: pip install -r requirements-gpu.txt
 # data: data/tgif/{orig,sd2-sp,ps-sp,masks}/testing/...   (TGIF downloads, see ../README.md)
+python scripts/check_env.py                # packages, GPU, data, disk
 python scripts/build_index.py              # index + integrity checks
 python scripts/make_resamples.py           # the 3 shareable resamples (already in resamples/)
 python scripts/run_aeroblade.py            # AEROBLADE over all images (resumable; --max-sources N, --shard i/n)
 python scripts/evaluate.py                 # dataframes + tables for full and resample_1..3
-# or all at once: bash scripts/run_all.sh
+# or all at once: python scripts/run_all.py   (any OS; bash scripts/run_all.sh does the same)
 ```
 
 Weights are downloaded on first use: the SD2 VAE (from `sd2-community/stable-diffusion-2-base`, sha256-checked; the

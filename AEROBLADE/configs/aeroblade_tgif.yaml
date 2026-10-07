@@ -16,8 +16,8 @@ model:
 
 run:
   order_seed: 0              # source images are processed in this seeded order, family by family
-  threads: 6
-  device: cpu
+  threads: 6                 # CPU threads (ignored on a GPU)
+  device: auto               # cuda if PyTorch sees a GPU, else cpu (--device to force one)
 
 detection:
   score: neg_mean_lpips      # higher = more likely generated (AEROBLADE: low reconstruction error)

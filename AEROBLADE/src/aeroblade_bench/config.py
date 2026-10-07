@@ -68,6 +68,8 @@ def environment_info() -> dict[str, Any]:
         "torch": torch.__version__,
         "torch_threads": torch.get_num_threads(),
         "cuda_available": torch.cuda.is_available(),
+        "torch_cuda": torch.version.cuda,
+        "gpu": torch.cuda.get_device_name(0) if torch.cuda.is_available() else None,
         "git_commit": git_commit(),
     }
     for mod in ("diffusers", "lpips", "sklearn", "skimage"):
