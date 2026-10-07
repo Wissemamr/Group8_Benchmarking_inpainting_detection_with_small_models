@@ -181,8 +181,28 @@ def add_group_metrics(det: pd.DataFrame) -> pd.DataFrame:
     return det
 
 
+def paired_detection(det: pd.DataFrame) -> dict:
+    """Each inpainted image against the authentic original of the same source image.
+
+    Scene content dominates AEROBLADE's distance, so the pooled AUC mixes the effect of inpainting
+    with differences between scenes; the paired comparison removes the scene. `frac_lower` is the
+    share of pairs whose inpainted image has the lower distance (AEROBLADE's premise predicts > 0.5).
+    """
+    real = det[det["label"] == 0].set_index("source_id")["aeroblade_distance"]
+    inp = det[det["label"] == 1].assign(d0=lambda d: d["source_id"].map(real)).dropna(subset=["d0"])
+    inp = inp.assign(rel_diff=(inp["aeroblade_distance"] - inp["d0"]) / inp["d0"])
+    groups = {"ALL": inp}
+    groups |= {g: grp for g, grp in inp.groupby("generator")}
+    groups |= {f"{g}_{mt}": grp for (g, mt), grp in inp.groupby(["generator", "mask_type"])}
+    return {name: {"n_pairs": len(g), "frac_lower": float((g["rel_diff"] < 0).mean()),
+                   "mean_rel_diff": float(g["rel_diff"].mean()),
+                   "median_rel_diff": float(g["rel_diff"].median())} for name, g in groups.items()}
+
+
 def overall(det: pd.DataFrame | None, loc: pd.DataFrame | None) -> dict:
     out: dict = {}
+    if det is not None and len(det):
+        out["detection_paired"] = paired_detection(det)
     if det is not None and len(det):
         for gen in ("ALL", "SD", "PS"):
             pos = det[(det["label"] == 1) & ((det["generator"] == gen) | (gen == "ALL"))]
@@ -196,6 +216,9 @@ def overall(det: pd.DataFrame | None, loc: pd.DataFrame | None) -> dict:
             if len(g):
                 out.setdefault("localization", {})[gen] = {
                     "n_images": len(g),
+                    "median_err_ratio_in_out": float(g["err_ratio_in_out"].median()),
+                    "frac_images_error_lower_inside": float((g["err_ratio_in_out"] < 1).mean()),
+                    "mean_gt_fraction": float(g["gt_fraction"].mean()),
                     **{f"macro_{c}": float(g[c].mean()) for c in (
                         "iou", "dice", "pixel_precision", "pixel_recall", "pixel_f1", "pixel_ap", "pixel_roc_auc",
                         "alt_iou", "alt_dice", "alt_pixel_ap", "alt_pixel_roc_auc")},

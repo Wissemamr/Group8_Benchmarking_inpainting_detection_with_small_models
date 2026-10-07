@@ -155,7 +155,7 @@ def main() -> None:
     load_s["lpips"] = time.perf_counter() - t
     print("model load (s):", {k: round(v, 1) for k, v in load_s.items()}, flush=True)
 
-    n_done, wall_start = 0, time.perf_counter()
+    n_done, wall_start, interrupted = 0, time.perf_counter(), False
     sum_total = 0.0
     out_path = records_dir / f"{label}.jsonl"
     try:
@@ -225,6 +225,8 @@ def main() -> None:
         })
     print(f"\n{n_done}/{len(work)} images in {elapsed / 3600:.2f} h "
           f"({sum_total / max(n_done, 1):.1f} s/image) -> {out_path.relative_to(ROOT)}", flush=True)
+    if interrupted:
+        sys.exit(130)  # non-zero, so run_all.sh stops here instead of evaluating a partial run
 
 
 if __name__ == "__main__":

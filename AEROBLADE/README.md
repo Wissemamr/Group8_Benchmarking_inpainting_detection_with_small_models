@@ -107,6 +107,23 @@ the wall-clock of each compute invocation, the model load times and the hardware
 `results/*/run_summary.json`. A resample reuses the full run's per-image inference, so its inference time is the sum over
 its own images; `localization_pixel_metrics_seconds_sum` and the `*_aggregation_seconds` fields give the evaluation cost.
 
+## Resume and backup
+
+The full pass takes ~21 h on a laptop CPU, so nothing is lost if it stops. Every image is saved as it finishes (a
+record line in `cache/<…>/records/*.jsonl`, and the LPIPS map and reconstruction written through a temporary file), so
+closing the terminal, killing the process, a reboot or a WSL restart costs at most the image in flight.
+
+* **Continue anytime**: `powershell -ExecutionPolicy Bypass -File scripts\resume.ps1` (Windows; runs inside WSL, keeps the PC
+  awake while it works) or `bash scripts/run_all.sh` (Linux / inside WSL). Finished images are skipped, and when every image
+  is done the evaluation runs by itself. Running it again after completion just redoes the evaluation.
+* **Pause**: Ctrl+C in the terminal, or simply stop the process; continue later with the same command.
+* **Backup**: `powershell -File scripts\backup_cache.ps1 -Dest <folder> [-EveryMinutes 30]` copies `cache/` incrementally and
+  never deletes anything from the backup. Restore with `robocopy <folder> <this folder>\cache /E`. A backup on the same disk
+  guards against deleting or corrupting the cache, not against a dead disk.
+* **Several machines**: `--shard i/n` splits the source images; copy the machines' `cache/<…>/` folders into one (file names
+  are unique per image, record files are named per host) and run `scripts/evaluate.py`.
+* The results themselves (`results/`) are small CSV / JSON files meant to be committed.
+
 ## Reproduce
 
 ```bash
