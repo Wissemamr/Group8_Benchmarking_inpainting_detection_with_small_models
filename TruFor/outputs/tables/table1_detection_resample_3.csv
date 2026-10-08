@@ -1,0 +1,2 @@
+Model,Accuracy,Precision,Recall,F1,ROC-AUC
+"TruFor (official pretrained, zero-shot on TGIF; no TGIF fine-tuning)",0.9516,0.9878,0.9594,0.9734,0.9749

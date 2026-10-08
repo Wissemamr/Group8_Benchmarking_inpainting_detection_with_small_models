@@ -1,0 +1,416 @@
+{
+ "sanity": [
+  {
+   "image_id": "sd_24919_bbox_2",
+   "gt_vs_gt_iou": 1.0,
+   "gt_vs_gt_dice": 1.0,
+   "empty_pred_iou": 0.0,
+   "empty_pred_dice": 0.0,
+   "inverted_gt_iou": 0.0,
+   "full_pred_iou": 0.12889713069978725,
+   "full_pred_iou_expected": 0.12889713069978725
+  },
+  {
+   "image_id": "sd_163746_segm_1",
+   "gt_vs_gt_iou": 1.0,
+   "gt_vs_gt_dice": 1.0,
+   "empty_pred_iou": 0.0,
+   "empty_pred_dice": 0.0,
+   "inverted_gt_iou": 0.0,
+   "full_pred_iou": 0.0037748932053173925,
+   "full_pred_iou_expected": 0.0037748932053173925
+  },
+  {
+   "image_id": "ps_351823_bbox_1",
+   "gt_vs_gt_iou": 1.0,
+   "gt_vs_gt_dice": 1.0,
+   "empty_pred_iou": 0.0,
+   "empty_pred_dice": 0.0,
+   "inverted_gt_iou": 0.0,
+   "full_pred_iou": 0.006714617927429274,
+   "full_pred_iou_expected": 0.006714617927429274
+  },
+  {
+   "image_id": "ps_342397_segm_2",
+   "gt_vs_gt_iou": 1.0,
+   "gt_vs_gt_dice": 1.0,
+   "empty_pred_iou": 0.0,
+   "empty_pred_dice": 0.0,
+   "inverted_gt_iou": 0.0,
+   "full_pred_iou": 0.005072977672035139,
+   "full_pred_iou_expected": 0.005072977672035139
+  }
+ ],
+ "per_image": [
+  {
+   "image_id": "real_410221",
+   "file": "orig/testing/airplane/410221_orig.png",
+   "label": "0",
+   "generator": "real",
+   "mask_type": "none",
+   "score": 0.3488105535507202,
+   "orig": "995x1024",
+   "processed": "995x1024",
+   "map": "995x1024",
+   "t_infer_s": 11.838069249992259,
+   "t_total_s": 12.352742749993922
+  },
+  {
+   "image_id": "real_451714",
+   "file": "orig/testing/skis/451714_orig.png",
+   "label": "0",
+   "generator": "real",
+   "mask_type": "none",
+   "score": 0.24452444911003113,
+   "orig": "540x720",
+   "processed": "540x720",
+   "map": "540x720",
+   "t_infer_s": 2.696784582993132,
+   "t_total_s": 2.9074737500050105
+  },
+  {
+   "image_id": "sd_24919_bbox_2",
+   "file": "sd2-sp/testing/elephant/24919_mask_bbox.png_ps_mask.png_sd2_2.png",
+   "label": "1",
+   "generator": "SD",
+   "mask_type": "bbox",
+   "score": 0.9813763499259949,
+   "orig": "1023x680",
+   "processed": "1023x680",
+   "map": "1023x680",
+   "t_infer_s": 5.339514582999982,
+   "t_total_s": 5.644051834009588,
+   "gt_frac": 0.12889713069978725,
+   "iou": 0.8839733165178719,
+   "dice": 0.9384138392699856,
+   "iou_gt_gt0": 0.8644492170215522,
+   "iou_gt_eq255": 0.9006181645268664
+  },
+  {
+   "image_id": "sd_163746_segm_1",
+   "file": "sd2-sp/testing/airplane/163746_mask_segm.png_ps_mask.png_sd2_1.png",
+   "label": "1",
+   "generator": "SD",
+   "mask_type": "segm",
+   "score": 0.9955729246139526,
+   "orig": "1023x781",
+   "processed": "1023x781",
+   "map": "1023x781",
+   "t_infer_s": 6.8234297090093605,
+   "t_total_s": 7.228028125013225,
+   "gt_frac": 0.0037748932053173925,
+   "iou": 0.7104790419161676,
+   "dice": 0.8307369158060564,
+   "iou_gt_gt0": 0.692432872253865,
+   "iou_gt_eq255": 0.6869310793237972
+  },
+  {
+   "image_id": "ps_351823_bbox_1",
+   "file": "ps-sp/testing/tennis racket/351823_mask_bbox.png_ps_1.png",
+   "label": "1",
+   "generator": "PS",
+   "mask_type": "bbox",
+   "score": 0.9999698400497437,
+   "orig": "813x1024",
+   "processed": "813x1024",
+   "map": "813x1024",
+   "t_infer_s": 8.574275999999372,
+   "t_total_s": 9.063532291998854,
+   "gt_frac": 0.006714617927429274,
+   "iou": 0.6889087656529517,
+   "dice": 0.8158034106556509,
+   "iou_gt_gt0": 0.6889087656529517,
+   "iou_gt_eq255": 0.6889087656529517
+  },
+  {
+   "image_id": "ps_342397_segm_2",
+   "file": "ps-sp/testing/skis/342397_mask_segm.png_ps_2.png",
+   "label": "1",
+   "generator": "PS",
+   "mask_type": "segm",
+   "score": 0.5415394902229309,
+   "orig": "1024x683",
+   "processed": "1024x683",
+   "map": "1024x683",
+   "t_infer_s": 6.143855333997635,
+   "t_total_s": 6.525406124987057,
+   "gt_frac": 0.005072977672035139,
+   "iou": 0.3305740263265029,
+   "dice": 0.496889342172361,
+   "iou_gt_gt0": 0.3839262861530586,
+   "iou_gt_eq255": 0.24586152295955088
+  }
+ ],
+ "float16": [
+  {
+   "image_id": "real_410221",
+   "n_pixels": 1018880,
+   "map_max_abs_err": 0.000244140625,
+   "conf_max_abs_err": 0.000244140625,
+   "bin>=0.5_px_differ": 2,
+   "bin>=0.5_frac_differ": 1.9629396984924625e-06,
+   "bin>0.5_px_differ": 0,
+   "bin>0.5_frac_differ": 0.0,
+   "conf_bin>=0.5_px_differ": 2
+  },
+  {
+   "image_id": "real_451714",
+   "n_pixels": 388800,
+   "map_max_abs_err": 0.0002440810203552246,
+   "conf_max_abs_err": 0.000244140625,
+   "bin>=0.5_px_differ": 0,
+   "bin>=0.5_frac_differ": 0.0,
+   "bin>0.5_px_differ": 0,
+   "bin>0.5_frac_differ": 0.0,
+   "conf_bin>=0.5_px_differ": 0
+  },
+  {
+   "image_id": "sd_24919_bbox_2",
+   "n_pixels": 695640,
+   "map_max_abs_err": 0.000244140625,
+   "conf_max_abs_err": 0.000244140625,
+   "bin>=0.5_px_differ": 1,
+   "bin>=0.5_frac_differ": 1.437525156690242e-06,
+   "bin>0.5_px_differ": 1,
+   "bin>0.5_frac_differ": 1.437525156690242e-06,
+   "conf_bin>=0.5_px_differ": 1,
+   "iou_f32": 0.8839622537143362,
+   "iou_f16": 0.8839733165178719,
+   "dice_f32": 0.9384076055362103,
+   "dice_f16": 0.9384138392699856,
+   "iou_abs_diff": 1.1062803535688559e-05,
+   "dice_abs_diff": 6.233733775284911e-06
+  },
+  {
+   "image_id": "sd_163746_segm_1",
+   "n_pixels": 798963,
+   "map_max_abs_err": 0.0002440810203552246,
+   "conf_max_abs_err": 0.000244140625,
+   "bin>=0.5_px_differ": 0,
+   "bin>=0.5_frac_differ": 0.0,
+   "bin>0.5_px_differ": 2,
+   "bin>0.5_frac_differ": 2.5032448311123294e-06,
+   "conf_bin>=0.5_px_differ": 0,
+   "iou_f32": 0.7104790419161676,
+   "iou_f16": 0.7104790419161676,
+   "dice_f32": 0.8307369158060564,
+   "dice_f16": 0.8307369158060564,
+   "iou_abs_diff": 0.0,
+   "dice_abs_diff": 0.0
+  },
+  {
+   "image_id": "ps_351823_bbox_1",
+   "n_pixels": 832512,
+   "map_max_abs_err": 0.0002440810203552246,
+   "conf_max_abs_err": 0.000244140625,
+   "bin>=0.5_px_differ": 0,
+   "bin>=0.5_frac_differ": 0.0,
+   "bin>0.5_px_differ": 0,
+   "bin>0.5_frac_differ": 0.0,
+   "conf_bin>=0.5_px_differ": 0,
+   "iou_f32": 0.6889087656529517,
+   "iou_f16": 0.6889087656529517,
+   "dice_f32": 0.8158034106556509,
+   "dice_f16": 0.8158034106556509,
+   "iou_abs_diff": 0.0,
+   "dice_abs_diff": 0.0
+  },
+  {
+   "image_id": "ps_342397_segm_2",
+   "n_pixels": 699392,
+   "map_max_abs_err": 0.000244140625,
+   "conf_max_abs_err": 0.000244140625,
+   "bin>=0.5_px_differ": 4,
+   "bin>=0.5_frac_differ": 5.719253294289898e-06,
+   "bin>0.5_px_differ": 6,
+   "bin>0.5_frac_differ": 8.578879941434847e-06,
+   "conf_bin>=0.5_px_differ": 6,
+   "iou_f32": 0.33075356415478613,
+   "iou_f16": 0.3305740263265029,
+   "dice_f32": 0.4970921334557698,
+   "dice_f16": 0.496889342172361,
+   "iou_abs_diff": 0.00017953782828322717,
+   "dice_abs_diff": 0.0002027912834087764
+  }
+ ],
+ "verification": {
+  "score_direction": {
+   "official_samples": {
+    "pristine1.jpg": 0.18970292806625366,
+    "pristine2.jpg": 0.18844321370124817,
+    "tampered1.png": 0.9976141452789307,
+    "tampered2.png": 0.9983463287353516
+   },
+   "min_tampered_gt_max_pristine": true,
+   "tgif_mean_score_real": 0.29666750133037567,
+   "tgif_mean_score_fake": 0.8796146512031555,
+   "code": "score = sigmoid(det_logit), as in test.py; map = softmax(pred)[1] = P(manipulated)"
+  },
+  "matches_official_test_py": {
+   "image_id": "sd_24919_bbox_2",
+   "map_max_abs_diff": 0.0,
+   "conf_max_abs_diff": 0.0,
+   "score_official": 0.9813763499259949,
+   "score_ours": 0.9813763499259949,
+   "official_keys": [
+    "conf",
+    "imgsize",
+    "map",
+    "score"
+   ]
+  },
+  "per_image": [
+   {
+    "image_id": "real_410221",
+    "size_ok": true
+   },
+   {
+    "image_id": "real_451714",
+    "size_ok": true
+   },
+   {
+    "image_id": "sd_24919_bbox_2",
+    "size_ok": true,
+    "mask_shape_eq_image": true,
+    "map_mean_in_gt": 0.8292053937911987,
+    "map_mean_out_gt": 0.007534807547926903,
+    "iou_by_orientation": {
+     "identity": 0.8839733165178719,
+     "flipud": 0.8778035064505458,
+     "fliplr": 0.13367239611764237,
+     "rot180": 0.1329106766277051
+    },
+    "mean_in_gt_by_orientation": {
+     "identity": 0.8292053937911987,
+     "flipud": 0.8227198123931885,
+     "fliplr": 0.231757253408432,
+     "rot180": 0.230421781539917
+    },
+    "orig_shape_eq_image": true,
+    "gt_frac": 0.12889713069978725,
+    "p_changed_given_gt1": 0.9997657975152232,
+    "p_changed_given_gt0": 0.003038084142223924,
+    "frac_changed_inside_gt": 0.9798767024462759,
+    "iou_changed_vs_gt": 0.9796518299146514,
+    "iou_changed_vs_inverted_gt": 0.0026465637080068257,
+    "pairing_ok": true
+   },
+   {
+    "image_id": "sd_163746_segm_1",
+    "size_ok": true,
+    "mask_shape_eq_image": true,
+    "map_mean_in_gt": 0.7311017513275146,
+    "map_mean_out_gt": 0.0012141589540988207,
+    "iou_by_orientation": {
+     "identity": 0.7104790419161676,
+     "flipud": 0.0,
+     "fliplr": 0.0,
+     "rot180": 0.0
+    },
+    "mean_in_gt_by_orientation": {
+     "identity": 0.7311017513275146,
+     "flipud": 0.000868805218487978,
+     "fliplr": 5.7315497542731464e-05,
+     "rot180": 0.0007332260720431805
+    },
+    "orig_shape_eq_image": true,
+    "gt_frac": 0.0037748932053173925,
+    "p_changed_given_gt1": 1.0,
+    "p_changed_given_gt0": 0.0005741588321835499,
+    "frac_changed_inside_gt": 0.8684134753815146,
+    "iou_changed_vs_gt": 0.8684134753815146,
+    "iou_changed_vs_inverted_gt": 0.0005719914439091672,
+    "pairing_ok": true
+   },
+   {
+    "image_id": "ps_351823_bbox_1",
+    "size_ok": true,
+    "mask_shape_eq_image": true,
+    "map_mean_in_gt": 0.6949396729469299,
+    "map_mean_out_gt": 0.0007072336156852543,
+    "iou_by_orientation": {
+     "identity": 0.6889087656529517,
+     "flipud": 0.6889087656529517,
+     "fliplr": 0.0,
+     "rot180": 0.0
+    },
+    "mean_in_gt_by_orientation": {
+     "identity": 0.6949396729469299,
+     "flipud": 0.6949396729469299,
+     "fliplr": 2.691346935534966e-06,
+     "rot180": 2.691346935534966e-06
+    },
+    "orig_shape_eq_image": true,
+    "gt_frac": 0.006714617927429274,
+    "p_changed_given_gt1": 0.9991055456171736,
+    "p_changed_given_gt0": 0.0,
+    "frac_changed_inside_gt": 1.0,
+    "iou_changed_vs_gt": 0.9991055456171736,
+    "iou_changed_vs_inverted_gt": 0.0,
+    "pairing_ok": true
+   },
+   {
+    "image_id": "ps_342397_segm_2",
+    "size_ok": true,
+    "mask_shape_eq_image": true,
+    "map_mean_in_gt": 0.6733427047729492,
+    "map_mean_out_gt": 0.011549950577318668,
+    "iou_by_orientation": {
+     "identity": 0.3305740263265029,
+     "flipud": 0.0,
+     "fliplr": 0.10778443113772455,
+     "rot180": 0.0
+    },
+    "mean_in_gt_by_orientation": {
+     "identity": 0.6733427047729492,
+     "flipud": 0.0018115760758519173,
+     "fliplr": 0.2706729471683502,
+     "rot180": 0.001959398854523897
+    },
+    "orig_shape_eq_image": true,
+    "gt_frac": 0.005072977672035139,
+    "p_changed_given_gt1": 0.9997181510710259,
+    "p_changed_given_gt0": 0.0007056179258569449,
+    "frac_changed_inside_gt": 0.8784051510648836,
+    "iou_changed_vs_gt": 0.8781876702153999,
+    "iou_changed_vs_inverted_gt": 0.000702039345659295,
+    "pairing_ok": true
+   }
+  ],
+  "no_gt_leak": {
+   "runner_drops_mask_columns": true,
+   "runner_mentions_masks_only_in_guards": [
+    "Only image paths reach this script; it never opens a GT mask (mask columns are dropped on read).",
+    "MASK_COLS = {\"mask_file\"}",
+    "rows = [{k: v for k, v in r.items() if k not in MASK_COLS} for r in csv.DictReader(open(args.rows, newline=\"\"))]",
+    "assert all(\"masks/\" not in r[\"file\"] for r in rows), \"a GT mask path was given as model input\""
+   ],
+   "model_inputs_contain_masks_dir": false,
+   "official_test_py_identical": "see matches_official_test_py: test.py never receives a mask path"
+  }
+ },
+ "timing": {
+  "per_image_total_s": [
+   12.352742749993922,
+   2.9074737500050105,
+   5.644051834009588,
+   7.228028125013225,
+   9.063532291998854,
+   6.525406124987057
+  ],
+  "per_image_infer_s": [
+   11.838069249992259,
+   2.696784582993132,
+   5.339514582999982,
+   6.8234297090093605,
+   8.574275999999372,
+   6.143855333997635
+  ],
+  "mean_s_per_image_excl_first": 6.273698425202747,
+  "s_per_mpx_excl_first": 9.1846771391309,
+  "n_images": 4407,
+  "mpx_total": 3086.638529,
+  "est_hours_by_image": 7.680052488852364,
+  "est_hours_by_mpx": 7.8749384261297015
+ }
+}
