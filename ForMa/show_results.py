@@ -27,6 +27,7 @@ def summarize(frame):
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--input', type=Path, default=DEFAULT_INPUT, help='Results workbook (.xlsx)')
+    parser.add_argument('--subset', choices=['ps-sp', 'sd2-sp'], help='Show only this generator subset')
     args = parser.parse_args(argv)
     try:
         frame = pd.read_excel(args.input, sheet_name='images', dtype={'source_id': str})
@@ -36,6 +37,10 @@ def main(argv=None):
     missing = required - set(frame.columns)
     if missing:
         parser.error(f'Missing columns in images sheet: {", ".join(sorted(missing))}')
+    if args.subset:
+        if 'subset' not in frame:
+            parser.error('Workbook has no subset column.')
+        frame = frame.loc[frame.subset.str.lower() == args.subset]
     if frame.empty:
         print('No evaluated images in this workbook yet.')
         return
@@ -48,6 +53,8 @@ def main(argv=None):
     for evaluation_id, group in frame.groupby('evaluation_id', sort=True):
         categories, overall = summarize(group)
         print(f'\nEvaluation: {evaluation_id}')
+        if 'subset' in group:
+            print(f'Subset: {", ".join(group.subset.unique())}')
         print(f'{len(group)} images | {group.source_id.nunique()} sources | '
               f'{group.category.nunique()} categories')
         print(categories.to_string(float_format=lambda v: f'{v:.4f}', na_rep='N/A'))

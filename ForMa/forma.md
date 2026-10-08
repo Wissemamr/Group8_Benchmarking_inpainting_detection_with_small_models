@@ -1,373 +1,555 @@
-# Documentation of the ForMa model testing on the TGIF Dataset
+# ForMa on TGIF PS-sp: model and evaluation methodology
 
+Documentation snapshot: **7 October 2026**. **8 October update:** SD2-sp support and run profiling are documented in Section 15; the original result tables remain the PS-sp snapshot. Tables are derived from [results/results_excel.xlsx](results/results_excel.xlsx), sheet `images`. This document describes the local implementation and measured experiment, not a reproduction of every experiment in the original paper.
 
-## Original Paper
+## 1. Research question and scope
+
+**How well does the released pretrained ForMa checkpoint localize manipulated pixels in the available TGIF Photoshop-spliced test subset, without local TGIF training or fine-tuning?**
+
+The current experiment is pretrained-checkpoint transfer evaluation for **binary pixel localization**. The local evaluation performs no training, optimizer updates, or threshold search. Zero-shot is appropriate only in the operational sense of no local target-dataset adaptation. Whether every source was absent from the checkpoint's original training data has not been audited; a strict no-overlap or out-of-distribution claim remains unverified.
+
+The workbook contains **2,058 manipulated images, 343 source IDs, and 13 categories**, restricted to `PS-sp/testing`. It contains no authentic-only examples, image-level classification gate, classification accuracy/F1, or ROC-AUC. Background pixels within manipulated images still contribute localization TN and FP.
+
+The [official ForMa repository](https://github.com/multimediaFor/ForMa) provides the code and weights for Guo et al., *A Lightweight and Effective Image Tampering Localization Network with Vision Mamba*, IEEE Signal Processing Letters, 2025. The checkpoint came from the [authors' linked release](https://drive.google.com/file/d/15NcJQr5kxhqC4V-WjyJhAqIsobI6u-yh/view). The original training recipe and complete training-data provenance are not reconstructed by this evaluation.
+
+### Evidence and implementation map
+
+| Source | What it establishes |
+| --- | --- |
+| [models/vmamba_pixelshuf_modals.py](models/vmamba_pixelshuf_modals.py) | Actual backbone, residual modalities and decoder construction |
+| [models/csms6s.py](models/csms6s.py), [models/csm_triton.py](models/csm_triton.py) | Selective-scan/cross-scan operations and backend fallbacks |
+| [inference.py](inference.py) | Checkpoint load, preprocessing, inference and postprocessing |
+| [metrics.py](metrics.py) | Pixel counts, metric formulas and undefined-value handling |
+| [evaluate_tgif_category.py](evaluate_tgif_category.py) | Pairing, workbook identity, timing and aggregation |
+| Excel `images` sheet | Historical settings, hashes, per-image counts, scores and timestamps |
+| [show_results.py](show_results.py) | Read-only macro summaries |
+| [visualize_results_figs.ipynb](visualize_results_figs.ipynb) | Charts and regenerated sample predictions |
+| [evaluate_tgif_sample.py](evaluate_tgif_sample.py) | Earlier six-image source pilot and HTML/JSON artifacts |
+
+Architecture details below are verified from the local code. External attribution is linked explicitly. Statistical procedures described later are proposed extensions, not completed significance tests. The category evaluator reads command-line arguments, **not** `config_pixelshuf_modals.yaml`; that YAML's training batch sizes do not describe this run.
+
+## 2. How the implemented model works
+
+The model receives only the RGB image. Ground-truth masks, category names and source IDs do not enter inference.
+
+```mermaid
+flowchart TD
+    A[RGB input: 512 x 512] --> B[VSSM backbone: four scales]
+    A --> C[Bilinear resize to 128 x 128]
+    C --> D[Noiseprint, Bayar and SRM residuals]
+    D --> E[Convolutional modality fusion]
+    B --> F[Linear projections and pixel shuffle]
+    F --> G[Concatenate and fuse]
+    E --> G
+    G --> H[Two-class logits: 128 x 128]
+    H --> I[Class-1 softmax]
+    I --> J[Nearest resize to original size]
+    J --> K[Probability greater than 0.5]
+    L[Matching grayscale mask greater than 127] --> M[Pixel counts and metrics]
+    K --> M
+```
+
+### 2.1 Visual state-space backbone
+
+`Forensic_Vmamba` constructs `Backbone_VSSM()` with four stages of widths **96, 192, 384, 768** and depths **2, 2, 9, 2**. Patch embedding reduces spatial size by four; subsequent stage transitions reduce it by two. Normalized features are exported before each stage's downsampling, and the inherited classification head is removed.
+
+| Feature for a 512 x 512 input | Channels | Spatial size |
+| --- | ---: | --- |
+| C1 | 96 | 128 x 128 |
+| C2 | 192 | 64 x 64 |
+| C3 | 384 | 32 x 32 |
+| C4 | 768 | 16 x 16 |
+
+Visual state-space blocks combine selective scanning, cross-direction scanning/merging, normalization, residual connections and an MLP branch. A simplified form of the recurrence implemented by the local PyTorch selective-scan fallback is
+
+$$
+h_t=\exp(\Delta_t A)\odot h_{t-1}+\Delta_t B_tu_t,
+\qquad y_t=C_th_t+Du_t.
+$$
+
+Here $u_t$ is a scanned feature, $h_t$ a state, and $\Delta_t$, $B_t$, $C_t$ are input-dependent quantities. Batch/channel/group indices, feature projections and scan merging are omitted: this is not the entire network equation. The instantiated defaults include state dimension 1 and `forward_type='v2_noz'`. Backend availability affects speed and can affect numerical details.
+
+### 2.2 Residual modalities
+
+The RGB input is first resized to quarter resolution using bilinear interpolation with `align_corners=False`. Three forensic representations are extracted:
+
+- **Noiseprint:** a 17-layer convolutional network produces one residual channel, repeated to three channels for fusion. Its parameters are frozen in the extractor. The full ForMa checkpoint supplies these weights.
+- **Bayar:** a 5 x 5 constrained convolution fixes the filter center at -1 and normalizes surrounding coefficients to sum to 1. The constraint is applied during forward execution.
+- **SRM:** three fixed high-pass filter outputs are clipped to [-2,2].
+
+Each representation passes through an `EarlyConv` branch: three convolution/BatchNorm/ReLU layers followed by a 1 x 1 projection. The outputs are concatenated and mixed by another `EarlyConv` into three channels. Dropout is disabled in evaluation mode. These representations are intended to supply residual cues alongside RGB features; this benchmark contains no ablation proving each branch's individual contribution.
+
+### 2.3 Decoder
+
+The class called `SegFormerHead` uses a pixel-shuffle decoder in this implementation; this name does not make the entire network a SegFormer model. Linear projections and pixel-shuffle factors 2, 4 and 8 bring C2, C3 and C4 to C1's resolution, yielding four 96-channel maps. Fused residuals are projected from 3 to 16 channels. The resulting 400-channel concatenation is fused to 96 channels and projected to two logits:
+
+$$
+Z=f_\theta(X)\in\mathbb{R}^{1\times2\times128\times128}.
+$$
+
+Channel 0 is background and channel 1 is manipulation. This is a spatial output, not an image-level authenticity score. Resizing low-resolution output cannot restore boundary detail lost during input reduction.
+
+### 2.4 Weights and execution
+
+`load_model` constructs `Forensic_Vmamba(noiseprint_path=None)`, loads the checkpoint on CPU, extracts `model_state_dict` when present, strips a common `module.` prefix if applicable and loads with `strict=True`. Missing/incompatible parameters cause failure; no separate Noiseprint checkpoint is required. Only trusted checkpoints should be loaded because this path uses the full checkpoint loader with `weights_only=False`.
+
+The model is moved to the chosen device, set to `.eval()`, and run under `torch.inference_mode()`. Output shape and finite logits are checked. Batch size is one. No test-time augmentation, tiling, ensemble, morphology, connected-component filtering or mask inversion is applied.
+
+## 3. Dataset and mask-folder use
+
+The [TGIF specification](https://github.com/IDLabMedia/tgif-dataset#filenaming) describes Photoshop/Firefly spliced images, bbox/segm masks, three generation variants, and Photoshop-adapted masks with an extra border. The local evaluator uses the following files:
+
+```text
+data_tgif/
+  ps-sp_testing/testing/<category>/<source>_mask_<bbox|segm>.png_ps_<0|1|2>.png
+  masks_testing/testing/<category>/<source>_mask_<bbox|segm>.png_ps_mask.png
+```
+
+The final `_ps_<variant>.png` in an image name is replaced by `_ps_mask.png`. All three variants share their source/type target. Bbox and segm are **different manipulated images with their own targets**, not two alternative annotations applied to the same prediction.
+
+Example:
+
+```text
+image: ps-sp_testing/testing/hair-drier/350002_mask_bbox.png_ps_0.png
+mask:  masks_testing/testing/hair drier/350002_mask_bbox.png_ps_mask.png
+```
+
+The evaluator first tries the exact mask-category folder; if absent, it tries replacing hyphens with spaces. This handles hair-drier, sports-ball, stop-sign and tennis-racket. Unexpected filenames and missing targets raise errors. Other mask representations, including plain `.png`, `_512.png`, and `_1024.png`, are not used.
+
+There are 3,428 local mask PNGs, but only 686 distinct source/type adapted targets for these 2,058 images. Each source contributes three bbox and three segm images. In this snapshot each source occurs in one category, and no duplicate `(evaluation_id, category, source_id, mask_type, variant)` rows exist. Matching local inventory counts establish local coverage, not independent upstream archive completeness.
+
+## 4. Preprocessing and ground-truth construction
+
+For image $i$ of original size $H_i\times W_i$:
+
+$$
+X_i=\operatorname{CHW}\left(\operatorname{Resize}_{\mathrm{linear},512\times512}(\operatorname{RGB}(I_i))/255\right).
+$$
+
+OpenCV decodes BGR, converts to RGB, resizes with `INTER_LINEAR`, then creates float32 values in [0,1] and tensor shape `[1,3,512,512]`. There is no ImageNet normalization, padding, crop or augmentation. Nonsquare images are stretched to a square. This follows the RGB/resize/scaling sequence in the [upstream loader](https://github.com/multimediaFor/ForMa/blob/main/mydatasets.py).
+
+Pillow loads the adapted ground truth as grayscale at original size. Its dimensions must match the image. It is not resized:
+
+$$
+G_i(p)=\mathbf1[M_i(p)>127].
+$$
+
+Thus values 128--255 denote manipulated pixels; 0--127 denote background. Intermediate gray border values are converted to hard labels, not fractional membership. This threshold is an explicit evaluation choice.
+
+The workbook records
+
+$$
+a_i=\text{foreground fraction}_i=\frac{\sum_pG_i(p)}{H_iW_i},
+\qquad b_i=\text{soft-border pixels}_i=\sum_p\mathbf1[0<M_i(p)<255].
+$$
+
+There are 1,917 image rows referencing a mask with intermediate values, not 1,917 unique masks. Widths range from 539 to 1,024 pixels and heights from 518 to 1,024.
+
+**Entry-point distinction:** the category evaluator and notebook threshold adapted masks at 127. Standalone `inference.py --mask` instead requires already binary 0/1 or 0/255 masks and rejects soft values. These input contracts are not interchangeable.
+
+## 5. From logits to predicted masks
+
+At output-grid position $q$:
+
+$$
+P_i(q)=\frac{\exp Z_{i,1}(q)}{\exp Z_{i,0}(q)+\exp Z_{i,1}(q)}.
+$$
+
+The code applies PyTorch softmax, resizes the foreground probability map using Pillow nearest-neighbor interpolation, and thresholds:
+
+$$
+\widetilde P_i=\operatorname{Resize}_{\mathrm{nearest},H_i\times W_i}(P_i),
+\qquad\widehat G_i(p)=\mathbf1[\widetilde P_i(p)>0.5].
+$$
+
+Ties are background. With nearest resizing and threshold 0.5 this agrees with two-class argmax followed by nearest resizing. No calibration or threshold optimization is performed by the evaluation script. The workbook records the threshold used, not its complete selection history.
+
+### Difference from the authors' scoring path
+
+The [upstream test script](https://github.com/multimediaFor/ForMa/blob/main/test.py) saves nearest-resized argmax masks; our scoring follows that binary-output convention. However, upstream [`calc_fixed_f1_iou`](https://github.com/multimediaFor/ForMa/blob/main/metric.py) resizes **logits bilinearly with `align_corners=True` before softmax/argmax** for metric calculation, and adds epsilon terms to ratios. Our scorer uses nearest-resized decisions and explicit undefined values. Boundary decisions and scores can differ. This is a declared local evaluation protocol, not exact reproduction of the paper's reported metric procedure.
+
+## 6. Metric formulas
+
+All counts are at original image resolution. The positive class is manipulation:
+
+$$
+\begin{aligned}
+TP_i&=\sum_p\mathbf1[\widehat G_i(p)=1\land G_i(p)=1],\\
+FP_i&=\sum_p\mathbf1[\widehat G_i(p)=1\land G_i(p)=0],\\
+FN_i&=\sum_p\mathbf1[\widehat G_i(p)=0\land G_i(p)=1],\\
+TN_i&=\sum_p\mathbf1[\widehat G_i(p)=0\land G_i(p)=0].
+\end{aligned}
+$$
+
+The counts partition the image: $TP_i+FP_i+FN_i+TN_i=H_iW_i$.
+
+| Metric | Formula | Interpretation |
+| --- | --- | --- |
+| Precision | $TP/(TP+FP)$ | Correct fraction of predicted manipulated pixels |
+| Recall / sensitivity | $TP/(TP+FN)$ | Fraction of target manipulation recovered |
+| F1 / Dice | $2TP/(2TP+FP+FN)$ | Foreground overlap balancing misses and false alarms |
+| IoU / Jaccard | $TP/(TP+FP+FN)$ | Intersection divided by union |
+| Specificity | $TN/(TN+FP)$ | Fraction of background correctly left unmarked |
+| Pixel accuracy | $(TP+TN)/(TP+FP+FN+TN)$ | Correct fraction of all pixels |
+
+Where defined, $F1=2PR/(P+R)$ and $F1=2IoU/(1+IoU)$ for a single image or pooled confusion table. **Macro F1 is not generally the harmonic mean of macro precision and macro recall.** Transforming mean IoU also does not generally yield mean F1.
+
+The implementation uses the count formula directly, with no smoothing epsilon. Dice equals pixel F1; reporting both does not supply independent evidence.
+
+### Undefined values
+
+| Situation | Behavior |
+| --- | --- |
+| Zero denominator | `None`; blank/NaN in Excel |
+| Empty prediction, nonempty target | F1=IoU=recall=0; precision undefined |
+| Empty target, nonempty prediction | F1=IoU=precision=0; recall undefined |
+| Both empty | F1 and IoU undefined; for a nonempty image, accuracy=specificity=1 |
+| No background in target | Specificity undefined |
+
+Undefined values are excluded from macro means per metric, with `defined_<metric>_count` recording the denominator. They are not silently replaced with 0 or 1. All reported metrics are defined for all rows in the current snapshot.
+
+## 7. Macro, micro and category weighting
+
+For metric $m_i$ and subset $S$, let $D_{S,m}$ contain only images where that metric is defined:
+
+$$
+\operatorname{Macro}_m(S)=\frac{1}{|D_{S,m}|}\sum_{i\in D_{S,m}}m_i.
+$$
+
+This is an average **across images**, not across foreground/background classes. A subset may be a category, mask type, category/type combination, or the full dataset. An empty defined set produces an undefined result.
+
+Micro metrics first sum counts over images, e.g. $TP_S=\sum_{i\in S}TP_i$:
+
+$$
+\operatorname{MicroF1}(S)=\frac{2TP_S}{2TP_S+FP_S+FN_S},\qquad
+\operatorname{MicroIoU}(S)=\frac{TP_S}{TP_S+FP_S+FN_S}.
+$$
+
+Other micro metrics use their corresponding count formulas. They are not generally image-count-weighted means of per-image scores; image sizes and foreground areas affect their contribution.
+
+For fully defined metrics, the two overall macro summaries are
+
+$$
+M_{\mathrm{images}}=\frac1N\sum_i m_i,\qquad
+M_{\mathrm{categories}}=\frac1C\sum_{c=1}^C\left(\frac1{N_c}\sum_{i\in c}m_i\right).
+$$
+
+With missing values, use metric-specific defined-image counts and omit categories with entirely undefined values for that metric. Equal category weighting gives the small hair-drier category the same influence as tennis-racket.
+
+There is no explicit bbox/segm reweighting. In this balanced snapshot, equal numbers of defined scores give
+
+$$
+M_{c,\mathrm{combined}}=\tfrac12M_{c,\mathrm{bbox}}+\tfrac12M_{c,\mathrm{segm}}.
+$$
+
+Both types contribute 50% within each category and overall, because there are three variants of each per source. Missing images or undefined scores could change this. Identical scoring rules do not imply equal difficulty: targets, region sizes and manipulated image contents differ.
+
+## 8. Recorded configuration and results
+
+The following tables describe the workbook's single recorded configuration. They do not describe an earlier smoke-test environment or whichever notebook kernel is selected now.
+
+| Setting | Recorded value |
+| --- | --- |
+| `evaluation_id` | `bce894a835eecfa44c2cea8272f14c3ba7bfb64ba11efcd5d1c4544c4d29b7b0` |
+| `checkpoint_sha256` | `3c28719a48848411c4647e2460887d9a5d6eb64f2c3e3a77f5061c686925c2ee` |
+| `protocol` | `forma-ps-sp-v1` |
+| `device` | `cpu` |
+| `threads` | `4` |
+| `torch_version` | `2.14.0+cpu` |
+| `input_size` | `512` |
+| `prediction_threshold` | `0.5` |
+| `ground_truth_threshold` | `127` |
+
+Saved evaluation timestamps span **2026-10-01T05:33:10.840450+00:00 to 2026-10-06T21:59:25.814747+00:00** (UTC). The workbook does not record the historical Python, NumPy, OpenCV or Pillow versions, CPU model, or backend availability. Earlier environment listings cannot reliably fill these gaps.
+
+### Per-category macro scores
+
+| category | Images | Sources | F1 / Dice | Recall | Precision | IoU | Specificity | Pixel accuracy |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| airplane | 168 | 28 | 0.4318 | 0.3910 | 0.6632 | 0.3228 | 0.9735 | 0.9412 |
+| bear | 120 | 20 | 0.4648 | 0.3993 | 0.7038 | 0.3452 | 0.9797 | 0.9088 |
+| elephant | 210 | 35 | 0.4354 | 0.3562 | 0.6768 | 0.3246 | 0.9895 | 0.9073 |
+| hair-drier | 12 | 2 | 0.4103 | 0.3287 | 0.6280 | 0.2700 | 0.9851 | 0.9253 |
+| kite | 186 | 31 | 0.3488 | 0.3156 | 0.6081 | 0.2413 | 0.9831 | 0.9464 |
+| scissors | 54 | 9 | 0.1444 | 0.1518 | 0.2057 | 0.0939 | 0.9639 | 0.9193 |
+| sheep | 168 | 28 | 0.3079 | 0.2788 | 0.5111 | 0.2165 | 0.9844 | 0.9269 |
+| skis | 264 | 44 | 0.0985 | 0.1571 | 0.1146 | 0.0615 | 0.9691 | 0.9481 |
+| snowboard | 120 | 20 | 0.2170 | 0.3505 | 0.2094 | 0.1444 | 0.9615 | 0.9471 |
+| sports-ball | 132 | 22 | 0.2458 | 0.3819 | 0.2536 | 0.1819 | 0.9541 | 0.9420 |
+| stop-sign | 120 | 20 | 0.6128 | 0.5648 | 0.8029 | 0.4773 | 0.9886 | 0.9520 |
+| tennis-racket | 282 | 47 | 0.2207 | 0.3479 | 0.2331 | 0.1474 | 0.9608 | 0.9456 |
+| zebra | 222 | 37 | 0.3557 | 0.3085 | 0.5777 | 0.2487 | 0.9750 | 0.8912 |
+
+### Overall macro scores
+
+| Group | F1 / Dice | Recall | Precision | IoU | Specificity | Pixel accuracy |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Equal image weight | 0.3150 | 0.3277 | 0.4542 | 0.2259 | 0.9739 | 0.9316 |
+| Equal category weight | 0.3303 | 0.3332 | 0.4760 | 0.2366 | 0.9745 | 0.9309 |
+
+### Scores by mask type
+
+| mask_type | Images | Sources | F1 / Dice | Recall | Precision | IoU | Specificity | Pixel accuracy | Mean foreground fraction |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| bbox | 1029 | 343 | 0.3078 | 0.2784 | 0.5085 | 0.2113 | 0.9750 | 0.9170 | 0.0830 |
+| segm | 1029 | 343 | 0.3223 | 0.3770 | 0.3999 | 0.2406 | 0.9727 | 0.9462 | 0.0437 |
+
+Bbox targets occupy approximately 8.30% of image area on average versus 4.37% for segm. Bbox has higher precision but lower recall; segm has slightly higher overall F1/IoU. These are descriptive associations, not proof of a causal mask-shape effect or statistical significance.
+
+### Background-only baseline and interpretation
+
+An all-background predictor would achieve
+
+$$
+\operatorname{MacroAccuracy}_{\mathrm{background-only}}=\frac1N\sum_i(1-a_i)=0.9366,
+$$
+
+compared with ForMa's 0.9316. This baseline is calculated from target fractions, not a separate inference run. On the current nonempty targets its F1=IoU=recall=0 and precision is undefined. ForMa's positive F1/IoU indicate foreground localization relative to that baseline; high accuracy alone conceals the imbalance. Pixel accuracy is not the fraction of images correctly detected.
+
+Stop-sign has the highest category mean F1 and skis the lowest. Hair-drier has only two source IDs; its estimate is especially fragile. These are point estimates: no confidence intervals or p-values have been added to the workbook or the tables.
+
+## 9. Workbook, provenance and resuming
+
+| Sheet | Contents |
+| --- | --- |
+| `images` | Completed sample rows: category/source/type/variant, paths/hashes, settings, dimensions, timestamp, foreground/soft-border values, timings, counts and metrics |
+| `category_summary` | Per configuration/category: `all`, `bbox`, `segm`; counts, macro/micro scores and defined-score denominators |
+| `aggregated_results` | Combined mask types in one category/configuration row |
+
+`evaluation_id` is SHA-256 of sorted JSON containing protocol, checkpoint SHA-256, input size, both thresholds, postprocessing description, device, threads and Torch version. `sample_key` hashes that ID plus absolute image/mask paths and file hashes.
+
+Each completed image triggers a temporary-workbook write followed by destination replacement. Reruns skip existing sample keys. Interrupted runs retain completed rows; summaries include whatever is saved, including partial categories. `category_total_images` records the discovered category size. `--limit` takes the first N sorted filenames, not a random sample.
+
+Paths are part of identity: relocating files or changing their contents can create additional historical rows for the same logical source/type/variant. No such duplicates occur in the current snapshot. The evaluation ID does not hash source code, most dependencies, hardware, or backend flags; it cannot alone certify reproducibility. Archive code and environment and use a separate workbook or versioned protocol for changed experiments. Use one writer at a time; close Excel during evaluation.
+
+The category evaluator stores **scores, not prediction masks or probability arrays**. Visualizations regenerate selected predictions unless a compatible cache exists.
+
+## 10. Running and reproducing the workflow
+
+Run from the project root using the working ForMa environment:
+
+```powershell
+python ForMa/evaluate_tgif_category.py --category airplane --device cpu --threads 4 --input-size 512 --threshold 0.5
+python ForMa/evaluate_tgif_category.py --category hair-drier --device cpu --threads 4
+python ForMa/evaluate_tgif_category.py --category bear --limit 1 --output ForMa/results/category_smoke.xlsx
+python ForMa/show_results.py
+python -m unittest discover -s ForMa/tests -v
+```
+
+To evaluate all locally available categories sequentially:
+
+```powershell
+Get-ChildItem -Directory -LiteralPath 'ForMa/data_tgif/ps-sp_testing/testing' | ForEach-Object {
+    python ForMa/evaluate_tgif_category.py --category $_.Name --device cpu --threads 4 --input-size 512 --threshold 0.5
+    if ($LASTEXITCODE -ne 0) { throw "Evaluation failed for $($_.Name)" }
+}
+```
+
+Use `--data-root`, `--weights`, and `--output` for alternative paths. `--device auto` chooses CUDA if available; the recorded evaluation used CPU. Input size must be a positive multiple of 32; changing it changes the protocol.
+
+For future runs, archive the exact command, code commit/diff, checkpoint hash, dataset manifest, Python version, environment export (`python -m pip freeze` or `uv pip freeze`), OS, hardware and acceleration backends. The project `pyproject.toml` does not capture all inference/notebook dependencies and is not a complete environment lockfile. Historical Python 3.10/Torch 1.13 setup notes and synthetic smoke results are not the environment/results documented in the table above.
+
+### Timing boundaries
+
+For each invocation with pending samples, the evaluator loads the model once and performs one discarded warmup. It measures one forward per image, synchronizing CUDA when used.
+
+- `forward_seconds` measures the model forward after input transfer; excludes loading, warmup, decoding, postprocessing, scoring and Excel writes.
+- `processing_seconds` includes per-image preprocessing through score/row preparation, but excludes workbook writing, initial discovery/hashing, model loading and warmup.
+- Summary timing is the mean of saved forward times.
+
+This is not a repeated controlled latency benchmark. CPU fallback timing must not be presented as optimized GPU throughput. FLOPs, peak memory, parameter count and cross-model speed rankings require separate measurements and are not established by this workbook.
+
+## 11. Graphs and qualitative examples
+
+Open [visualize_results_figs.ipynb](visualize_results_figs.ipynb) in the Jupyter Notebook editor and select the ForMa environment. If needed, install plotting dependencies inside that kernel with `%pip install matplotlib pandas openpyxl ipykernel`.
+
+The notebook shows overall/category macro scores, bbox/segm comparisons, a signed difference heatmap, distributions and foreground-area versus F1. It isolates one evaluation ID. Figures are saved under `results/figures/<evaluation-id-prefix>/`.
+
+Use `SAMPLE_CATEGORY`, `SAMPLE_SOURCE_ID`, and `SAMPLE_VARIANT` to choose examples. By default it selects the upper-middle source in the sorted source-average F1 list **within the selected variant** and displays both mask types. This is illustrative selection, not random sampling or proof of representativeness.
+
+The notebook validates checkpoint/image/mask hashes, reuses recorded thresholds/input size and regenerates predictions with the local inference functions. It checks all four confusion counts against the workbook. Cache files in `results/visualization_predictions/` are keyed by sample key, device, Torch version and a visualization-version string, but not every code/dependency change; invalidate the cache when those change.
+
+Panels show manipulated RGB, binary ground truth, ForMa prediction and pixel errors (green TP, red FP, blue FN, black TN). The saved airplane source `567432`, variant 0, exactly reproduced both mask-type confusion tables: F1 approximately 0.1685 bbox and 0.8819 segm. This verifies two outputs, not every image across all environments.
+
+The earlier `evaluate_tgif_sample.py --category sheep --source-id 154947` pilot exports HTML, JSON, CSV and per-image artifacts for six correlated examples; it is not the full benchmark. Standalone `inference.py` exports prediction/overlay PNGs, float probability NPY, probability PNG and metadata JSON. Its binary-mask requirement differs from the adapted-mask evaluator.
+
+## 12. Reliability, error analysis and limitations
+
+The current notebook and workbook are descriptive. For uncertainty, resample **source IDs**, retaining all related variants and mask types together. There are 343 source groups, assuming those groups are themselves independent; neither 2,058 images nor millions of pixels are independent experimental units.
+
+For per-category intervals, resample sources within category. For overall intervals conditional on observed category composition, resample within each category and preserve the intended category weights. For micro scores, recompute pooled counts for each resample. With adequate sources, 10,000 source-cluster bootstrap resamples and a declared 95% interval method are a practical starting point. Hair-drier's two sources cannot support convincing generalization uncertainty; resampling cannot create new independent information.
+
+For model comparisons, match identical evaluated samples and preserve source pairing. For bbox-versus-segm comparisons, average variants within each source/type and form paired source differences. Report effect sizes and intervals; a paired t-test requires defensible assumptions about source differences, and rank tests answer different hypotheses. Predefine comparisons and account for multiple testing. These analyses have not yet been executed as part of this documented snapshot.
+
+Analyze failures by category, mask type, manipulated area, missed pixels, false-positive area and boundary behavior. The residual branches have not been ablated. Observed differences cannot isolate mask shape from content/generation effects. The current subset does not establish performance on other generators, fully regenerated images, authentic-only detection or broader datasets.
+
+Keep every descendant of a source in the same train/validation/test split. Do not optimize thresholds on these test results and then claim an untouched evaluation. Original training-data overlap remains unaudited. Training-seed variability requires independently trained models; repeating fixed-checkpoint inference does not measure it.
+
+## 13. Report-ready methodology paragraph
+
+> We evaluated the released pretrained ForMa checkpoint without local TGIF fine-tuning on 2,058 PS-sp manipulated test images from 343 source images across 13 categories. Each source contributes three bounding-box-based and three segmentation-based variants. RGB images were linearly resized to 512 x 512 and scaled to [0,1]. Two-class output logits at quarter input resolution were converted to foreground softmax probabilities, nearest-resized to original image dimensions and thresholded strictly above 0.5. Matching Photoshop-adapted ground-truth masks were binarized strictly above grayscale value 127. Foreground precision, recall, F1/Dice and IoU were calculated from original-resolution pixel confusion counts, along with specificity and pixel accuracy. Macro results average defined per-image scores; equal-category averages are reported separately. The equal-image macro F1 and IoU were 0.3150 and 0.2259. This experiment measures localization on manipulated images, not image-level detection accuracy. It uses an explicitly declared local scoring protocol that differs from the upstream metric interpolation procedure; absence of overlap with the checkpoint's original training data has not been certified.
+
+## 14. References and provenance gaps
+
+- [Official ForMa code and citation](https://github.com/multimediaFor/ForMa).
+- [Upstream data loader](https://github.com/multimediaFor/ForMa/blob/main/mydatasets.py), [test script](https://github.com/multimediaFor/ForMa/blob/main/test.py), [metrics](https://github.com/multimediaFor/ForMa/blob/main/metric.py).
+- [TGIF specifications and file naming](https://github.com/IDLabMedia/tgif-dataset).
+
+External code links target moving branches inspected on the documentation date. Pin revisions before publication. Historical dependency/hardware details not captured in the workbook, original training overlap, validated efficiency measurements, confidence intervals and significance tests remain outstanding; they are not supplied by this document.
+
+```bibtex
 @article{guo2025light,
   title={A Lightweight and Effective Image Tampering Localization Network with Vision Mamba},
-  author={Guo, Kun and Cao Gang and Lou, Zijie and Huang, Xianglin and Liu, Jiaoyun},
+  author={Guo, Kun and Cao, Gang and Lou, Zijie and Huang, Xianglin and Liu, Jiaoyun},
   journal={IEEE Signal Processing Letters},
   year={2025}
 }
 
-
-## Methodology
-
-                  OFFICIAL FORMA
-                pretrained weights
-                       │
-                       ▼
-              ┌─────────────────┐
-              │   TGIF image    │
-              └────────┬────────┘
-                       │
-                ForMa preprocessing
-                       │
-                       ▼
-                ForMa inference
-                       │
-                       ▼
-              Predicted pixel mask
-                       │
-             ┌─────────┴─────────┐
-             ▼                   ▼
-       Ground-truth TGIF      Prediction
-             mask               mask
-             │                   │
-             └─────────┬─────────┘
-                       ▼
-                 IoU / Dice /
-                 Pixel F1 etc.  
-
-
-## How
-We need our images to be pairs of an image and a mask, the mask is a bianry iamge localsiiing the inpainted area
-
-
-In our case, for ForMa, our experiment is : **Zero-shot / out-of-distribution evaluation of ForMa on TGIF**
-
-
-We want to answer the question
-How well does the publicly released ForMa model, using the authors' pretrained checkpoint, generalize to the TGIF text-guided inpainting dataset?
-
-
-
-- We downlaod the model weihgts : https://drive.google.com/file/d/15NcJQr5kxhqC4V-WjyJhAqIsobI6u-yh/view
-- We check the oriignal forma repo and identify the minimum files required for inference and add the necessary dependencies ( we manage dependepncies with `uv`)
-
-
+@InProceedings{mareen2024tgif,
+  author={Mareen, Hannes and Karageorgiou, Dimitrios and Van Wallendael, Glenn and Lambert, Peter and Papadopoulos, Symeon},
+  title={{TGIF}: Text-Guided Inpainting Forgery Dataset},
+  booktitle={Proc. Int. Workshop on Information Forensics and Security (WIFS) 2024},
+  year={2024}
+}
 ```
-(Group8_Benchmarking_inpainting_detection_with_small_models) PS C:\Users\PC CABA DZ\DRAIEVAL\Group8_Benchmarking_inpainting_detection_with_small_models> uv pip list
-Package            Version
------------------- ------------
-certifi            2022.12.7
-charset-normalizer 2.1.1
-idna               3.4
-numpy              2.2.6
-pillow             12.3.0
-requests           2.28.1
-torch              1.13.1+cu117
-torchvision        0.14.1+cu117
-typing-extensions  4.16.0
-urllib3            1.26.13
 
 
+## 15. SD2-sp evaluation and run profiling (8 October 2026)
+
+The evaluator now supports `--subset ps-sp` (default) and `--subset sd2-sp`.
+Sections 1--14 and their result tables remain the **7 October PS-sp snapshot**;
+adding SD2 support does not turn those tables into SD2 measurements.
+
+### SD2 file matching and separate results
+
+SD2-sp images use the layout:
+
+```text
+data_tgif/sd2-sp_testing/testing/<category>/<source>_mask_<bbox|segm>.png_ps_mask.png_sd2_<0|1|2>.png
 ```
-## Single-image inference and localization metrics
 
-From the `ForMa` directory with the project virtual environment active:
+Their targets are the existing adapted masks:
+
+```text
+data_tgif/masks_testing/testing/<category>/<source>_mask_<bbox|segm>.png_ps_mask.png
+```
+
+All 2,058 local SD2-sp image/mask pairs across 13 categories were checked for
+matching dimensions. SD2 folders use spaces for some categories; either
+`--category hair-drier` or `--category "hair drier"` resolves them. Saved category
+names use hyphens, consistently with the PS results. Both subsets use the same
+preprocessing, prediction threshold, ground-truth threshold and metric formulas.
+
+New rows have `generator=SD2`, `subset=SD2-sp` and protocol `forma-sd2-sp-v1`.
+The ordinary PS protocol/configuration remains compatible with previous resume
+identities. Different generator subsets have different evaluation IDs, and their
+summaries remain separate even when stored in the same workbook. The notebook
+lists evaluation IDs with subset labels and requires a selection when more than
+one configuration is present. Its saved historical charts remain PS results
+until rerun with the selected SD2 configuration.
+
+From the project root:
 
 ```powershell
-python inference.py --image "data_tgif/image.png" --mask "data_tgif/mask.png" --output-dir "results/image"
+# Validate file matching and image/mask dimensions; no model or result rows
+python ForMa/evaluate_tgif_category.py --subset sd2-sp --category all --check-only
+
+# Evaluate every SD2 category, sequentially, with ordinary timing enabled
+python ForMa/evaluate_tgif_category.py --subset sd2-sp --category all --device cpu --threads 4
+
+# Or evaluate just one category
+python ForMa/evaluate_tgif_category.py --subset sd2-sp --category airplane --device cpu --threads 4
+
+# Display only SD2 scores in the shared workbook
+python ForMa/show_results.py --subset sd2-sp
 ```
 
-Replace both paths with an actual corresponding image/mask pair. Omit `--mask`
-for prediction only; scores will be `null`, not fabricated. The ground-truth
-mask must have the original image dimensions and use 0/1 or 0/255, with white
-meaning manipulated. Soft masks are rejected. Do not invert mask labels based
-on whichever orientation gives a better score.
+Default scores go to `ForMa/results/results_excel.xlsx`; existing PS rows are
+retained. Use `--output ForMa/results/results_sd2.xlsx` for a separate workbook
+and pass that path to `show_results.py --input` or the notebook's `WORKBOOK`.
+Rerunning resumes completed samples. `--category all` loads/warms the model once
+per category that has pending work and creates a report for each category.
+`--limit N` applies per category, and `--check-only` validates the full selected
+category even if a limit is supplied. Full CPU evaluation can be lengthy.
 
-The checkpoint defaults to `ForMa_weights/ForMa_weights.pth`. Use `--weights`
-to override it. `--device auto` selects CUDA when available, otherwise CPU.
-Use `--device cpu` explicitly if needed. `--input-size 512` and
-`--threshold 0.5` are the defaults. Smaller sizes (multiples of 32) are useful
-for debugging but change the evaluation protocol.
+### Run reports: automatic, separate from quality scores
 
-To instantiate and run from Python while in `ForMa`:
+Each category invocation creates a unique folder under the output workbook's
+parent directory in `runs/`; `--run-dir` overrides that location. New Excel rows
+record `run_id` to connect them to the report. Historical rows do not acquire
+retroactive timing data.
 
-```python
-from inference import load_model, preprocess_image, run_inference, prediction_maps
-
-model = load_model(device="cpu")  # eval mode, strict checkpoint loading
-image_tensor, original = preprocess_image("data_tgif/image.png")
-logits = run_inference(model, image_tensor)
-probability, binary_prediction = prediction_maps(logits, original.size)
-```
-
-The full checkpoint already contains Noiseprint weights. The inference loader
-passes `noiseprint_path=None` to avoid requiring a separate `np++.pth`, then
-loads all parameters with `strict=True`. Missing weights cause an error rather
-than silently benchmarking a partly random model. Use trusted checkpoint files:
-the released training checkpoint needs the legacy full-checkpoint loader in
-this PyTorch environment.
-
-Preprocessing follows the authors' [dataset loader](https://github.com/multimediaFor/ForMa/blob/main/mydatasets.py):
-OpenCV RGB, linear square resize, float32 scaled to [0, 1], no ImageNet normalization.
-Binary output follows their [test script](https://github.com/multimediaFor/ForMa/blob/main/test.py):
-class 1 is foreground; at the default threshold take the two-class decision
-(ties are background) and nearest-resize to the original image resolution.
-Scores here are calculated on that saved full-resolution binary mask; this is
-an explicit benchmark protocol, not a claim of reproducing every paper score.
-
-The implementation uses OpenCV for matching image resizing. If setting up
-another environment with the existing PyTorch 1.13 installation:
-
-```powershell
-uv pip install "numpy<2" "opencv-python-headless<4.12" einops
-```
-
-Each output directory contains:
-
-- `prediction.png`: binary localization, 0 background / 255 manipulated.
-- `overlay.png`: predicted pixels highlighted in red.
-- `probabilities.npy`: float32 foreground probabilities at original resolution.
-- `probabilities.png`: 8-bit probability visualization; use the NPY for analysis.
-- `metrics.json`: scores, confusion counts, paths and SHA-256 hashes, sizes,
-  threshold, device, available acceleration backends, versions and forward time.
-
-`metrics.py` defines foreground metrics with TP, FP, FN and TN counted per pixel:
-
-| Metric | Definition |
+| Artifact | Contents |
 | --- | --- |
-| IoU | TP / (TP + FP + FN) |
-| Dice / pixel F1 | 2 TP / (2 TP + FP + FN) |
-| Precision | TP / (TP + FP) |
-| Recall | TP / (TP + FN) |
-| Specificity | TN / (TN + FP) |
-| Pixel accuracy | (TP + TN) / all pixels |
+| `run.json` | Status/error, configuration, selected/skipped/newly saved counts, wall and CPU time, stage summaries, throughput, available memory statistics, environment and code hashes |
+| `images.csv` | One successfully saved new image per row: sample key, filename/type and stage timings including workbook writing |
+| `profile.txt` | With `--profile`: top 80 Python functions by cumulative time |
+| `profile.pstats` | With `--profile`: complete cProfile data for further inspection |
 
-Dice and pixel F1 are the same metric for binary masks. A zero denominator
-returns `None` / JSON `null`, including IoU and Dice when both masks are empty.
-An empty prediction against a nonempty target scores 0 for IoU and Dice.
-A false positive on an authentic image likewise scores 0. Report the number
-of defined values when averaging; do not silently replace null scores with 1.
-Pixel accuracy can be high for a poor localization model when background dominates.
+JSON is finalized on successful completion, ordinary exceptions or KeyboardInterrupt.
+A forced process kill cannot guarantee final JSON; image CSV rows are flushed as
+they are appended. A completed resume-only invocation has zero newly saved images
+and null inference throughput rather than invented timing. Failure reports can
+contain stage measurements for an attempted image that was not saved.
 
-For a dataset benchmark, retain one report per image in a distinct output
-folder. Macro scores average defined per-image values; micro scores sum TP,
-FP, FN and TN across images and call `metrics_from_counts`. Keep resolution,
-threshold, mask conventions and preprocessing identical across models. Choose
-thresholds using validation data, not the TGIF test masks. A single cold forward
-time is a smoke-test measurement, not a stable throughput benchmark; use repeated
-warmed runs on the same hardware/backend for speed comparisons.
+Stages include discovery, workbook reading, image/mask hashing and resume checks,
+model loading, warmup, preprocessing/target loading, device transfer, forward,
+postprocessing/metrics and workbook writing. Every stage summary includes count,
+total, mean, median, p95, minimum and maximum seconds. These percentiles describe
+the observed images, not a confidence interval or repeated same-image trial.
+CUDA stages synchronize around forward/transfer measurements.
 
-Validation from the project root:
+The per-category wall clock covers evaluation orchestration and workbook writes,
+but excludes interpreter/import startup and final report export. Some setup
+work is outside named stages, so their sum need not equal wall time.
 
-```powershell
-python -m unittest discover -s ForMa/tests -v
-```
+$$
+\text{forward-only images/s}=\frac{n_{\mathrm{forward}}}{\sum_j t_{\mathrm{forward},j}},
+\qquad
+\text{saved images/wall second}=\frac{n_{\mathrm{newly\ saved}}}{t_{\mathrm{invocation}}}.
+$$
 
-The initial local end-to-end check used the released checkpoint on a synthetic
-image/mask at 512x512 input, on CPU. Outputs are under `results/synthetic_smoke`.
-This verifies execution and output generation only; its localization scores
-are not TGIF results. The `data_tgif` directory was empty at implementation time.
+Wall throughput includes setup and Excel persistence, and depends on resume state
+and workbook size. It is distinct from forward-only throughput. Process CPU time
+includes CPU work across process threads and can exceed wall time.
 
-## Exploring the downloaded TGIF Photoshop-spliced test subset
+`max_sampled_rss_bytes` is the largest process RSS observation at stage boundaries,
+**not a continuously observed peak or model-only memory requirement**. It includes
+Python, workbook, tensors and model. It is null if optional `psutil` is absent;
+install `psutil` in the evaluation environment to enable it. CUDA runs also record
+PyTorch peak allocated/reserved bytes for the measured loop after resetting the
+peak counters following warmup. These exclude memory outside PyTorch's allocator.
 
-### Category evaluation into a shared Excel workbook
+The report records Python/package versions, OS/processor string, logical CPU count,
+model parameter count, available backend flags, and hashes of the local evaluator,
+inference, metrics, timing helper and model Python files. It does not compute
+validated FLOPs, power/energy use, or continuous GPU utilization.
 
-From the repository root, with the existing ForMa inference environment active:
+### Optional detailed code profiling
 
-```powershell
-uv pip install pandas openpyxl tqdm
-python ForMa/evaluate_tgif_category.py --category airplane
-python ForMa/evaluate_tgif_category.py --category bear
-```
-
-Both commands append to `ForMa/results/results_excel.xlsx`. Use one writer at a
-time and close the workbook in Excel while running. The console reports category
-image/source counts, bbox/segm counts, completed/remaining images, and a progress
-bar with elapsed time, estimated remaining time, and current IoU/F1.
-
-The `images` sheet is the shared per-image dataframe: category, source ID,
-generation variant, bbox/segm type, image and mask names and absolute paths,
-dimensions, hashes, checkpoint/settings, UTC timestamp, foreground fraction,
-soft-border pixel count, forward/processing time, TP/FP/FN/TN, pixel F1, Dice,
-IoU, precision, recall, specificity, and pixel accuracy. Processing time excludes
-Excel writing; forward time excludes loading, warmup, and preprocessing.
-
-The `category_summary` sheet resembles the localization table in `results.md`:
-model, generator, category, image/source counts, bbox:segm count ratio, aggregated
-scores, and timing. Each category has an `all` row plus separate bbox/segm rows.
-`macro_*` averages defined image scores; `micro_*` pools pixel confusion counts.
-Undefined per-image scores are blank, and `defined_*_count` records the macro
-denominators. Summaries cover completed rows, so interrupted/limited runs are
-partial results; `category_total_images` in the image sheet shows the full size.
-
-The `aggregated_results` sheet provides one row per category and evaluation
-configuration, combining bbox and segm images. It includes `number_of_samples`,
-source and mask-type counts, macro (per-image average) and micro (pooled pixel)
-localization metrics, defined-score counts, and mean inference time. Different
-evaluation configurations remain separate. It updates automatically on each
-save, including when rerunning an already completed category. Counts describe
-saved evaluations, so unfinished categories have partial aggregates.
-
-The workbook is saved after each image using a temporary file followed by
-replacement. Repeating a command skips matching completed images. File paths,
-image/mask hashes and evaluation settings determine identity; changed weights or
-thresholds create a separate evaluation ID and separate summaries. Historical
-rows are retained when inputs change. This evaluates only PS-sp testing images,
-using their matching Photoshop-adapted mask with values >127 as foreground.
-Prediction probabilities use >0.5 by default. It does not perform classification.
-
-Optional flags:
+Use a small diagnostic run in a separate workbook:
 
 ```powershell
-# Small real-model check in a separate workbook
-python ForMa/evaluate_tgif_category.py --category bear --limit 1 --output ForMa/results/category_smoke.xlsx
-# Explicit execution settings
-python ForMa/evaluate_tgif_category.py --category bear --device cpu --threads 4 --input-size 512 --threshold 0.5
+python ForMa/evaluate_tgif_category.py --subset sd2-sp --category airplane --limit 1 --device cpu --profile --output ForMa/results/sd2_profile.xlsx
 ```
 
-Use `--data-root` for another directory with the same TGIF archive layout and
-`--weights` for another compatible checkpoint. The Excel workbook is generated
-under the ignored results directory; `results.md` remains the collaborative table.
+`--profile` uses Python's [cProfile](https://docs.python.org/3/library/profile.html)
+for Python call counts, self time and cumulative time. It profiles the category
+invocation, including loading, warmup and persistence; it is not a PyTorch operator
+or CUDA kernel trace. Profiling adds overhead. A `profiling=cProfile` configuration
+field gives diagnostic runs a separate evaluation ID so their timings are not
+silently mixed into ordinary runs. Use ordinary unprofiled runs for latency
+comparisons. Repeating an already completed profile command resumes; use a new
+output workbook to deliberately repeat inference rather than measuring a no-op.
 
-
-The local download now has this layout:
-
-```text
-data_tgif/
-  ps-sp_testing/testing/<category>/<id>_mask_<type>.png_ps_<variant>.png
-  masks_testing/testing/<category>/<id>_mask_<type>.png_ps_mask.png
-```
-
-Inventory: 2,058 manipulated images and 3,428 mask files across 13 categories.
-The mask count is larger because several mask/crop representations are provided.
-The sheep category contains 168 images: 28 source IDs x 2 mask types x 3 variants.
-All 2,058 PS-sp image files have an adapted mask with matching dimensions.
-This validates local pairing; it does not independently certify archive completeness.
-
-According to the [TGIF dataset documentation](https://github.com/IDLabMedia/tgif-dataset),
-`PS-sp` identifies Photoshop/Firefly inpainting followed by splicing, `bbox` is
-a bounding-box mask, `segm` is an object-segmentation mask, and variants `0`, `1`,
-`2` are separate generated versions. The category and source ID identify the
-original object/scene; variants of the same scene are correlated samples.
-
-For example, pair:
-
-```text
-ps-sp_testing/testing/sheep/154947_mask_bbox.png_ps_0.png
-masks_testing/testing/sheep/154947_mask_bbox.png_ps_mask.png
-```
-
-Use the Photoshop-adapted mask, not just `154947_mask_bbox.png`: the adapted
-mask includes a blended border. Local adapted masks contain intermediate gray
-values. Our sample evaluator binarizes them with `value > 127`, explicitly
-recorded in the report. White is manipulated. This is a declared evaluation
-choice for the soft border, not a claim of exact equivalence to the TGIF paper's
-complete evaluation protocol. Keep this choice fixed in subsequent comparisons.
-The generic `_mask_512.png` / `_mask_1024.png` and crop-specific files are not
-interchangeable with the adapted splicing mask; for this source, `_mask_1024.png`
-is entirely white and would give an incorrect localization target.
-
-Run the initial six-image sample from `ForMa`:
-
-```powershell
-python evaluate_tgif_sample.py --category sheep --source-id 154947
-```
-
-It loads the model once, discards one warmup, then evaluates all six variants
-(two mask types x three generations) at 512x512 input. Original-resolution masks
-are scored after nearest resizing of the probability map, at fixed prediction
-threshold 0.5. It saves `results/sheep_sample/report.html` with side-by-side
-input, ground truth and prediction, plus `report.json`, `samples.csv`, and
-`inventory.json`. Each image also has its own scores and float probability map.
-
-The JSON separates model-loading time, warmup, forward-pass time, per-image
-processing time, and total elapsed time before final report writing. Macro
-scores average images; micro scores pool confusion counts. This is a one-scene
-pilot, not a representative sheep-category or full TGIF benchmark. Do not split
-generated siblings of the same source ID between training and evaluation.
-
-The current environment was recreated as Python 3.12 and required installing
-its inference dependencies again. Runtime versions are recorded in the report;
-its timings are not directly comparable with the earlier Python 3.10 / PyTorch
-1.13 synthetic check.
+For fair PS-versus-SD2 runtime comparisons, use the same device, environment,
+input size, threads, warmup and comparable input groups. Prior PS forward times
+remain available but lack the newly added stage and run metadata. Compare quality
+on matched sources and report macro F1/IoU separately from runtime and memory.
 
 
 
-
-## To run the ForMa model
 
 ```
->>> python ForMa/evaluate_tgif_category.py --category <category>
+python ForMa/evaluate_tgif_category.py --subset sd2-sp --category all --device cpu --threads 4
 ```
-
-__________________________
-
-
-## Evaluation Results
-
-**Source:** `ts_excel.xlsx`
-
-> Macro metrics on a **0–1 scale**.  
-> BBox and segmentation variants are combined.  
-> Only evaluated images and categories are included. Configurations are shown separately.
-
-### Evaluation Summary
-
-- **Evaluation ID:** `bce894a835eecfa44c2cea8272f14c3ba7bfb64ba11efcd5d1c4544c4d29b7b0`
-- **Images:** 2,058
-- **Sources:** 343
-- **Categories:** 13
-
-### Per-Category Results
-
-| Category | Images | Sources | F1 | Recall | Precision | IoU | Dice | Specificity | Pixel Accuracy |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| airplane | 168 | 28 | 0.4318 | 0.3910 | 0.6632 | 0.3228 | 0.4318 | 0.9735 | 0.9412 |
-| bear | 120 | 20 | 0.4648 | 0.3993 | 0.7038 | 0.3452 | 0.4648 | 0.9797 | 0.9088 |
-| elephant | 210 | 35 | 0.4354 | 0.3562 | 0.6768 | 0.3246 | 0.4354 | 0.9895 | 0.9073 |
-| hair-drier | 12 | 2 | 0.4103 | 0.3287 | 0.6280 | 0.2700 | 0.4103 | 0.9851 | 0.9253 |
-| kite | 186 | 31 | 0.3488 | 0.3156 | 0.6081 | 0.2413 | 0.3488 | 0.9831 | 0.9464 |
-| scissors | 54 | 9 | 0.1444 | 0.1518 | 0.2057 | 0.0939 | 0.1444 | 0.9639 | 0.9193 |
-| sheep | 168 | 28 | 0.3079 | 0.2788 | 0.5111 | 0.2165 | 0.3079 | 0.9844 | 0.9269 |
-| skis | 264 | 44 | 0.0985 | 0.1571 | 0.1146 | 0.0615 | 0.0985 | 0.9691 | 0.9481 |
-| snowboard | 120 | 20 | 0.2170 | 0.3505 | 0.2094 | 0.1444 | 0.2170 | 0.9615 | 0.9471 |
-| sports-ball | 132 | 22 | 0.2458 | 0.3819 | 0.2536 | 0.1819 | 0.2458 | 0.9541 | 0.9420 |
-| stop-sign | 120 | 20 | **0.6128** | **0.5648** | **0.8029** | **0.4773** | **0.6128** | 0.9886 | **0.9520** |
-| tennis-racket | 282 | 47 | 0.2207 | 0.3479 | 0.2331 | 0.1474 | 0.2207 | 0.9608 | 0.9456 |
-| zebra | 222 | 37 | 0.3557 | 0.3085 | 0.5777 | 0.2487 | 0.3557 | 0.9750 | 0.8912 |
-
-### Overall Averages
-
-| Aggregation | F1 | Recall | Precision | IoU | Dice | Specificity | Pixel Accuracy |
-|---|---:|---:|---:|---:|---:|---:|---:|
-| All images (equal image weight) | 0.3150 | 0.3277 | 0.4542 | 0.2259 | 0.3150 | 0.9739 | 0.9316 |
-| All categories (equal category weight) | 0.3303 | 0.3332 | 0.4760 | 0.2366 | 0.3303 | 0.9745 | 0.9309 |
-
-### Notes
-
-- **F1 and Dice are identical** in this evaluator.
-- Overall averages are **macro averages**, not pooled pixel-level metrics.
-- **All images (equal image weight):** each evaluated image contributes equally to the final average.
-- **All categories (equal category weight):** each of the 13 categories contributes equally, regardless of the number of images in that category.
-- BBox and segmentation variants are combined in these results.
-
-
-
-
-Image:
-ps-sp_testing/testing/hair-drier/
-350002_mask_bbox.png_ps_0.png
-
-Ground-truth mask:
-masks_testing/testing/hair drier/
-350002_mask_bbox.png_ps_mask.png
-
-
-The mask is not given to ForMa as input. The process is:
-1. Give the manipulated RGB image to ForMa.
-2. Obtain its predicted manipulation map.
-3. Resize that prediction to the original image dimensions using nearest-neighbor interpolation.
-4. Compare it pixel by pixel against the ground-truth mask.

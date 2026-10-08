@@ -1,5 +1,6 @@
 """Workbook append/resume and mask pairing tests with deterministic model output."""
 import sys
+import json
 from pathlib import Path
 import tempfile
 import unittest
@@ -14,6 +15,64 @@ import evaluate_tgif_category as evaluator
 
 
 class CategoryEvaluationTests(unittest.TestCase):
+    def test_sd2_pairing_shared_workbook_and_profile_reports(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            masks = root / 'masks_testing/testing/hair drier'
+            masks.mkdir(parents=True)
+            Image.new('L', (32, 32), 255).save(masks / '123_mask_bbox.png_ps_mask.png')
+            for subset, category, filename in [
+                ('ps-sp', 'hair-drier', '123_mask_bbox.png_ps_0.png'),
+                ('sd2-sp', 'hair drier', '123_mask_bbox.png_ps_mask.png_sd2_0.png'),
+            ]:
+                folder = root / f'{subset}_testing/testing' / category
+                folder.mkdir(parents=True)
+                Image.new('RGB', (32, 32)).save(folder / filename)
+                pairs = evaluator.discover(root, 'hair-drier', subset)
+                self.assertEqual(len(pairs), 1)
+                self.assertEqual(pairs[0][1].parent, masks)
+            weights = root / 'weights.pth'
+            weights.write_bytes(b'fixture')
+            output = root / 'results.xlsx'
+            common = ['--data-root', str(root), '--output', str(output), '--weights', str(weights),
+                      '--device', 'cpu', '--input-size', '32', '--category', 'hair-drier']
+            logits = torch.zeros(1, 2, 32, 32)
+            logits[:, 1] = 2
+            with patch.object(evaluator, 'load_model'), patch.object(evaluator, 'run_inference', return_value=logits):
+                evaluator.main(common)
+                evaluator.main(common + ['--subset', 'sd2-sp'])
+                evaluator.main(common + ['--subset', 'sd2-sp'])
+                evaluator.main(common + ['--subset', 'sd2-sp', '--profile'])
+            frame = pd.read_excel(output, sheet_name='images')
+            self.assertEqual(len(frame), 3)
+            self.assertEqual(frame.evaluation_id.nunique(), 3)
+            summary = pd.read_excel(output, sheet_name='category_summary')
+            self.assertEqual(set(zip(summary.generator, summary.subset)), {('PS', 'PS-sp'), ('SD2', 'SD2-sp')})
+            reports = [json.loads(p.read_text()) for p in (root / 'runs').glob('*/run.json')]
+            self.assertEqual(len(reports), 4)
+            resumed = [r for r in reports if r['newly_saved_images'] == 0]
+            self.assertEqual(len(resumed), 1)
+            self.assertEqual(resumed[0]['skipped_images'], 1)
+            self.assertIsNone(resumed[0]['forward_only_images_per_second'])
+            profiled = next(r for r in reports if r['profiled'])
+            folder = root / 'runs' / profiled['run_id']
+            self.assertTrue((folder / 'profile.pstats').is_file())
+            self.assertTrue((folder / 'images.csv').is_file())
+            self.assertEqual(profiled['stages']['forward']['count'], 1)
+            self.assertEqual(profiled['status'], 'completed')
+
+    def test_check_only_and_failed_run_report(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            runs = root / 'runs'
+            with patch.object(evaluator, 'load_model') as loader:
+                with self.assertRaisesRegex(ValueError, 'Unknown category'):
+                    evaluator.main(['--data-root', str(root), '--category', 'bear',
+                                    '--check-only', '--run-dir', str(runs)])
+                loader.assert_not_called()
+            report = json.loads(next(runs.glob('*/run.json')).read_text())
+            self.assertEqual(report['status'], 'failed')
+
     def test_append_resume_and_changed_settings(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
