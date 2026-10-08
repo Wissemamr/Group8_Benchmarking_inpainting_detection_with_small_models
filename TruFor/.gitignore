@@ -1,0 +1,20 @@
+# Large or third-party inputs: download them (see README), never commit
+/TruFor/
+/data/
+/weights/
+/logs/
+.venv-*/
+# Per-image maps (6.4 GB) and smoke-test maps stay local
+/outputs/inference/maps/
+/outputs/inference/progress.json
+/outputs/phaseB_smoke/maps/
+/outputs/phaseB_smoke/maps_f32/
+/outputs/phaseB_smoke/official/
+*.npz
+*.npy
+*.pth
+*.pth.tar
+*.zip
+*.tar.gz
+# The root .gitignore ignores MANIFEST, which matches this folder on case-insensitive filesystems
+!/outputs/manifest/

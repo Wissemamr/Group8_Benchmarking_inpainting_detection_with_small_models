@@ -1,0 +1,10 @@
+{
+ "sanity": {
+  "n_images": 4068,
+  "gt_vs_gt_all_metrics_1": true,
+  "empty_pred_all_metrics_0": true,
+  "n_empty_gt_skipped_in_empty_pred_check": 0
+ },
+ "flags": [],
+ "unit_tests": "passed: hand-computed cases, both-empty=1, empty-pred=0, empty-GT=0, F1==Dice, Dice=2IoU/(1+IoU)"
+}

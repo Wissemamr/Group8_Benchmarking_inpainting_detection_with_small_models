@@ -1,0 +1,6 @@
+{
+ "n_unique": 4407,
+ "problems": [
+  "every mask is binary {0,255} with both values present"
+ ]
+}

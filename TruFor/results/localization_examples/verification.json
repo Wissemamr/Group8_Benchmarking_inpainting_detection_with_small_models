@@ -1,0 +1,122 @@
+{
+ "sd_7784_bbox_2": {
+  "csv": {
+   "generator": "SD",
+   "mask_type": "bbox",
+   "category": "kite",
+   "det_score": "0.8866510987281799",
+   "det_pred": "1"
+  },
+  "metrics": {
+   "iou": 0.989256546,
+   "pixel_f1": 0.9945992617,
+   "pixel_precision": 0.9972890486,
+   "pixel_recall": 0.991923945
+  },
+  "verification": {
+   "image_size_WH": [
+    1024,
+    768
+   ],
+   "mask_size_WH": [
+    1024,
+    768
+   ],
+   "map_shape_HW": [
+    768,
+    1024
+   ],
+   "npz_imgsize": [
+    768,
+    1024
+   ],
+   "csv_size_WH": [
+    1024,
+    768
+   ],
+   "exif_orientation": null,
+   "mask_mode": "RGB",
+   "mask_channels_identical": true,
+   "map_dtype": "float16",
+   "map_min": 0.0008416175842285156,
+   "map_max": 0.9970703125,
+   "counts_recomputed": {
+    "tp": 228082,
+    "fp": 620,
+    "fn": 1857,
+    "tn": 555873
+   },
+   "counts_match_csv_exactly": true,
+   "metrics_max_abs_diff_vs_csv": 4.678191167784007e-11,
+   "n_map_px_exactly_0_5": 4,
+   "gt_px": 229939,
+   "gt_fraction": 0.29238255818684894,
+   "pred_px": 228702,
+   "mask_soft_edge_px": 15336,
+   "map_mean_inside_gt": 0.9535039663314819,
+   "map_mean_outside_gt": 0.013035261072218418,
+   "fn_map_mean": 0.3386041224002838
+  },
+  "figure": "results/localization_examples/sd_7784_bbox_2.png"
+ },
+ "ps_7784_bbox_1": {
+  "csv": {
+   "generator": "PS",
+   "mask_type": "bbox",
+   "category": "kite",
+   "det_score": "0.937009871006012",
+   "det_pred": "1"
+  },
+  "metrics": {
+   "iou": 0.2083192028,
+   "pixel_f1": 0.34480823,
+   "pixel_precision": 0.9987701159,
+   "pixel_recall": 0.2083726554
+  },
+  "verification": {
+   "image_size_WH": [
+    1024,
+    768
+   ],
+   "mask_size_WH": [
+    1024,
+    768
+   ],
+   "map_shape_HW": [
+    768,
+    1024
+   ],
+   "npz_imgsize": [
+    768,
+    1024
+   ],
+   "csv_size_WH": [
+    1024,
+    768
+   ],
+   "exif_orientation": null,
+   "mask_mode": "RGB",
+   "mask_channels_identical": true,
+   "map_dtype": "float16",
+   "map_min": 0.0002090930938720703,
+   "map_max": 0.99609375,
+   "counts_recomputed": {
+    "tp": 47913,
+    "fp": 59,
+    "fn": 182026,
+    "tn": 556434
+   },
+   "counts_match_csv_exactly": true,
+   "metrics_max_abs_diff_vs_csv": 4.357939009658196e-11,
+   "n_map_px_exactly_0_5": 16,
+   "gt_px": 229939,
+   "gt_fraction": 0.29238255818684894,
+   "pred_px": 47972,
+   "mask_soft_edge_px": 15336,
+   "map_mean_inside_gt": 0.30948543548583984,
+   "map_mean_outside_gt": 0.0030206518713384867,
+   "fn_map_mean": 0.167166069149971
+  },
+  "figure": "results/localization_examples/ps_7784_bbox_1.png"
+ }
+}
