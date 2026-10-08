@@ -1,0 +1,2 @@
+Model,Pixel Precision,Pixel Recall,Pixel F1,Dice,IoU
+"TruFor (official pretrained, zero-shot on TGIF; no TGIF fine-tuning)",0.9310,0.8213,0.8727,0.8727,0.7742

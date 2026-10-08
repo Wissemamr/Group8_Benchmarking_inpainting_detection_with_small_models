@@ -1,0 +1,30 @@
+{
+ "checkpoint": "weights/extracted/weights/trufor.pth.tar",
+ "checkpoint_keys": [
+  "best_key",
+  "best_value",
+  "epoch",
+  "optimizer",
+  "state_dict"
+ ],
+ "epoch": 81,
+ "torch": "2.2.2",
+ "device": "cpu",
+ "strict_load": {
+  "missing": [],
+  "unexpected": []
+ },
+ "tensors_in_checkpoint": 952,
+ "tensors_not_equal_after_load": [],
+ "checkpoint_numel": 68705510,
+ "params_total": 68697421,
+ "params_trainable": 1578242,
+ "buffers_total": 8089,
+ "params_by_top_module": {
+  "backbone": 64984456,
+  "decode_head": 1577474,
+  "decode_head_conf": 1576961,
+  "dncnn": 557249,
+  "detection": 1281
+ }
+}

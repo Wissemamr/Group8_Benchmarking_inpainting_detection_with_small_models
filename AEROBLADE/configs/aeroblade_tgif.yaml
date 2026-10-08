@@ -1,0 +1,37 @@
+# AEROBLADE benchmark on the TGIF testing split (authentic + SD2 + Photoshop inpaintings).
+# Relative paths are resolved against the AEROBLADE/ folder.
+
+data:
+  root: data/tgif            # holds orig/ sd2-sp/ ps-sp/ masks/ (see README, "Data")
+  mask_threshold: 127        # ground truth = 8-bit ps_mask > threshold (Photoshop-style soft edges)
+  index_csv: results/index/all_images.csv
+
+model:
+  aes: [SD2]                 # autoencoders to reconstruct with; several = AEROBLADE's per-image minimum
+  seed: 1                    # latent sampling seed (AEROBLADE's default)
+  image_size: 512            # every image (authentic or not) is resized to 512x512, bicubic
+  lpips_layer: 2             # AEROBLADE's lpips_vgg_2 (relu2_2), map at H/2 x W/2
+  lpips_pad_detect: 0        # detection score = AEROBLADE's exact distance (no extra padding)
+  lpips_pad_map: 16          # localization map: reflect-pad 16 px first, removes VGG's border artifact
+
+run:
+  order_seed: 0              # source images are processed in this seeded order, family by family
+  threads: 6                 # CPU threads (ignored on a GPU)
+  device: auto               # cuda if PyTorch sees a GPU, else cpu (--device to force one)
+
+detection:
+  score: neg_mean_lpips      # higher = more likely generated (AEROBLADE: low reconstruction error)
+  threshold: youden          # operating point maximising TPR - FPR on a calibration set
+  crossfit_folds: 5          # full run: threshold fitted out-of-fold over source images
+  crossfit_seed: 0
+
+localization:
+  polarity: inverted         # AEROBLADE's premise: inpainted pixels reconstruct better -> 1 - norm. error
+  normalize: percentile      # per image, then clip to [0, 1]
+  percentiles: [1, 99]
+  binarize: otsu             # per-image Otsu threshold on the normalized map
+
+resamples:
+  n: 3
+  fraction: 0.8              # share of source images drawn, stratified by category, without replacement
+  seed: 2025                 # resample k uses seed + k
