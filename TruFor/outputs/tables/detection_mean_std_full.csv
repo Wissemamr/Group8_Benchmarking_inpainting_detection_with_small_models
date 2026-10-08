@@ -1,0 +1,2 @@
+accuracy_mean,accuracy_std,precision_mean,precision_std,recall_mean,recall_std,f1_mean,f1_std,roc_auc_mean,roc_auc_std,balanced_accuracy_mean,balanced_accuracy_std,baseline_all_manip_accuracy_mean,baseline_all_manip_accuracy_std,baseline_all_manip_f1_mean,baseline_all_manip_f1_std
+0.9548717948717949,0.004716695522589001,0.9887860208411857,0.0008498609385965189,0.9620202020202021,0.004548820302706172,0.975216651676272,0.0026361255306455197,0.9769700642791551,0.0027929883453162658,0.9155555555555556,0.006529816710664305,0.923076923076923,1.3597399555105182e-16,0.96,0.0

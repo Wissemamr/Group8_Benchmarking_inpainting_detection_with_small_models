@@ -1,0 +1,7 @@
+resample_id,image_id,source_id,category,generator,mask_type,variant,label,width,height,file,mask_file
+1,real_410221,410221,airplane,real,none,-1,0,995,1024,orig/testing/airplane/410221_orig.png,
+1,real_451714,451714,skis,real,none,-1,0,540,720,orig/testing/skis/451714_orig.png,
+1,sd_24919_bbox_2,24919,elephant,SD,bbox,2,1,1023,680,sd2-sp/testing/elephant/24919_mask_bbox.png_ps_mask.png_sd2_2.png,masks/testing/elephant/24919_mask_bbox.png_ps_mask.png
+1,sd_163746_segm_1,163746,airplane,SD,segm,1,1,1023,781,sd2-sp/testing/airplane/163746_mask_segm.png_ps_mask.png_sd2_1.png,masks/testing/airplane/163746_mask_segm.png_ps_mask.png
+1,ps_351823_bbox_1,351823,tennis racket,PS,bbox,1,1,813,1024,ps-sp/testing/tennis racket/351823_mask_bbox.png_ps_1.png,masks/testing/tennis racket/351823_mask_bbox.png_ps_mask.png
+1,ps_342397_segm_2,342397,skis,PS,segm,2,1,1024,683,ps-sp/testing/skis/342397_mask_segm.png_ps_2.png,masks/testing/skis/342397_mask_segm.png_ps_mask.png

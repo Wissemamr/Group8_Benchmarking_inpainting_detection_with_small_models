@@ -1,0 +1,40 @@
+{
+  "tgif_root": "data/tgif",
+  "resamples_dir": "../AEROBLADE/resamples",
+  "resample_csvs": [
+    "resample_1.csv",
+    "resample_2.csv",
+    "resample_3.csv"
+  ],
+  "resamples_json": "resamples.json",
+  "manifest_csv": "outputs/manifest/manifest_unique.csv",
+  "validation_csv": "outputs/manifest/validation_per_file.csv",
+  "validation_summary": "outputs/manifest/validation_summary.json",
+  "expected": {
+    "rows_per_resample": 3575,
+    "real": 275,
+    "SD": 1650,
+    "PS": 1650,
+    "per_generator_mask_type": 825,
+    "unique_files": 4407
+  },
+  "seed": 0,
+  "gt_mask": {
+    "rule": "manipulated = (mask_L >= 128), i.e. mask/255 >= 0.5; masks are RGB with identical channels, converted to L",
+    "main_threshold": 128,
+    "sensitivity_rules": [
+      ">0",
+      "==255"
+    ],
+    "note": "Decided by user after Phase A: masks have soft (anti-aliased) edges; only 47/678 strictly binary."
+  },
+  "prediction_threshold": 0.5,
+  "storage": {
+    "maps_format": "np.savez_compressed, float16, lossless",
+    "min_free_disk_gb": 3.0,
+    "scalars": "image-level score, detection logit and all scalars written to results CSV at full float64 precision (repr)",
+    "float16_check": "Phase B smoke: <=6 px/image (<=8.6e-6) change at the 0.5 cut; |dIoU|,|dDice| <= 2.1e-4; kept float16 per user"
+  },
+  "prediction_rule": "predicted manipulated = (anomaly map > prediction_threshold), strict, as in the official TruFor metrics.py (final Phase D decision; Phase B used >=, difference <= 1e-4 in pooled F1)",
+  "detection_rule": "predicted manipulated = (image score > 0.5), official TruFor rule"
+}

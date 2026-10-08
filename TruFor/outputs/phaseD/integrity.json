@@ -1,0 +1,205 @@
+{
+ "all_ok": true,
+ "checks": [
+  {
+   "check": "results.csv has 4,407 rows",
+   "ok": true,
+   "detail": "4407"
+  },
+  {
+   "check": "all status == ok",
+   "ok": true,
+   "detail": "Counter({'ok': 4407})"
+  },
+  {
+   "check": "error column empty everywhere",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "no duplicate image_id",
+   "ok": true,
+   "detail": "4407 unique"
+  },
+  {
+   "check": "no duplicate file",
+   "ok": true,
+   "detail": "4407 unique"
+  },
+  {
+   "check": "no duplicate npz",
+   "ok": true,
+   "detail": "4407 unique"
+  },
+  {
+   "check": "image_id set == manifest",
+   "ok": true,
+   "detail": "manifest 4407"
+  },
+  {
+   "check": "file/label/generator/mask_type agree with manifest",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "orig size == manifest width/height",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "map size == orig size (CSV)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "scores and logits finite",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "scores in [0,1]",
+   "ok": true,
+   "detail": "min 0.00836 max 0.999988"
+  },
+  {
+   "check": "score == sigmoid(det_logit)",
+   "ok": true,
+   "detail": "max abs diff 8.84e-08"
+  },
+  {
+   "check": "scores exactly 0.5 (threshold ties)",
+   "ok": true,
+   "detail": "0 images"
+  },
+  {
+   "check": "resample_1.csv sha256 matches resamples.json",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "resample_1.csv: 3,575 rows, no duplicates",
+   "ok": true,
+   "detail": "3575 rows / 3575 unique"
+  },
+  {
+   "check": "resample_1.csv: every row exists in results.csv",
+   "ok": true,
+   "detail": "0 missing"
+  },
+  {
+   "check": "resample_1.csv: file/label/generator/mask_type agree with results.csv",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "resample_1.csv: composition real 275 / SD 1650 / PS 1650, 825 per generator x mask type",
+   "ok": true,
+   "detail": "{'real': 275, 'SD': 1650, 'PS': 1650}"
+  },
+  {
+   "check": "resample_1.csv: label == (generator != real)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "resample_2.csv sha256 matches resamples.json",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "resample_2.csv: 3,575 rows, no duplicates",
+   "ok": true,
+   "detail": "3575 rows / 3575 unique"
+  },
+  {
+   "check": "resample_2.csv: every row exists in results.csv",
+   "ok": true,
+   "detail": "0 missing"
+  },
+  {
+   "check": "resample_2.csv: file/label/generator/mask_type agree with results.csv",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "resample_2.csv: composition real 275 / SD 1650 / PS 1650, 825 per generator x mask type",
+   "ok": true,
+   "detail": "{'real': 275, 'SD': 1650, 'PS': 1650}"
+  },
+  {
+   "check": "resample_2.csv: label == (generator != real)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "resample_3.csv sha256 matches resamples.json",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "resample_3.csv: 3,575 rows, no duplicates",
+   "ok": true,
+   "detail": "3575 rows / 3575 unique"
+  },
+  {
+   "check": "resample_3.csv: every row exists in results.csv",
+   "ok": true,
+   "detail": "0 missing"
+  },
+  {
+   "check": "resample_3.csv: file/label/generator/mask_type agree with results.csv",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "resample_3.csv: composition real 275 / SD 1650 / PS 1650, 825 per generator x mask type",
+   "ok": true,
+   "detail": "{'real': 275, 'SD': 1650, 'PS': 1650}"
+  },
+  {
+   "check": "resample_3.csv: label == (generator != real)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "resample_1 != resample_2 (overlap)",
+   "ok": true,
+   "detail": "2860 shared images"
+  },
+  {
+   "check": "resample_1 != resample_3 (overlap)",
+   "ok": true,
+   "detail": "2925 shared images"
+  },
+  {
+   "check": "resample_2 != resample_3 (overlap)",
+   "ok": true,
+   "detail": "2834 shared images"
+  },
+  {
+   "check": "union of resamples covers all 4,407 images",
+   "ok": true,
+   "detail": "4407"
+  },
+  {
+   "check": "every npz readable, keys map/conf/imgsize, float16, shape == (orig_h, orig_w), finite, in [0,1]",
+   "ok": true,
+   "detail": "0 bad"
+  },
+  {
+   "check": "every manipulated image has a mask of the same size; reals have none",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "imgsize order",
+   "ok": true,
+   "detail": "{'HW': 4407}"
+  },
+  {
+   "check": "map pixels exactly == 0.5 (where > vs >= differ)",
+   "ok": true,
+   "detail": "32576 px total"
+  }
+ ]
+}

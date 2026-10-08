@@ -1,0 +1,5 @@
+Resample,"F1 @0.5, best of map/inverted, boundary excluded (macro)","F1 @ oracle per-image threshold, best of map/inverted, boundary excluded (macro)",NaN images skipped (th / best)
+resample_1,0.8652,0.9085,10 / 0
+resample_2,0.8654,0.9104,11 / 0
+resample_3,0.8646,0.9122,1 / 0
+mean ± std,0.8651 ± 0.0004,0.9104 ± 0.0019,
