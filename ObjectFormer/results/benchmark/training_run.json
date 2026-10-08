@@ -1,0 +1,32 @@
+{
+ "history": [
+  {
+   "epoch": 1,
+   "val_auc": 0.4867724867724868,
+   "val_iou": 0.0
+  },
+  {
+   "epoch": 2,
+   "val_auc": 0.5045351473922903,
+   "val_iou": 0.020077983602176473
+  },
+  {
+   "epoch": 3,
+   "val_auc": 0.5057634164777022,
+   "val_iou": 0.03258350733501304
+  }
+ ],
+ "n_params": 34413204,
+ "size": 256,
+ "epochs": 3,
+ "lr": 0.0001,
+ "batch": 8,
+ "lambda_seg": 1.0,
+ "pos_weight": 0.0833333358168602,
+ "n_train": 2600,
+ "n_val": 273,
+ "n_heldout": 1534,
+ "heldout_fraction": 0.35,
+ "seed": 2026,
+ "degenerate": false
+}
