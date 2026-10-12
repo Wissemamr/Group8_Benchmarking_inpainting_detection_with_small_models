@@ -9,7 +9,8 @@ Phases (each is timed, and RAM / GPU are sampled separately for each):
   measure    every image once, batch size 1, CUDA-synchronized stage timings; peak PyTorch GPU memory
              per image; detection and localization metrics against the ground truth
   flops      FLOPs of one full prediction per image (torch.utils.flop_counter, PyTorch >= 2.1)
-  profile    torch.profiler over --profile-images images: per-operator CPU/GPU time, memory, FLOPs
+  profile    torch.profiler over --profile-images images (default 3, ForMa 1): per-operator CPU/GPU
+             time, memory, FLOPs. Runs last, after the results above are saved.
 Writes model_test/outputs/<model>/: per_image.csv, profile.json, gpu_samples.csv, torch_ops.csv/.txt,
 trace.json.gz (chrome://tracing or ui.perfetto.dev), maps/ (small previews of the score maps).
 """
@@ -73,7 +74,7 @@ def main() -> None:
     p.add_argument("--out", type=Path, help="default: model_test/outputs/<model>")
     p.add_argument("--limit", type=int, default=0, help="first N images only (0 = all)")
     p.add_argument("--warmup", type=int, default=3)
-    p.add_argument("--profile-images", type=int, default=3)
+    p.add_argument("--profile-images", type=int, help="images for torch.profiler (default 3, ForMa 1)")
     p.add_argument("--flops-images", type=int, default=0, help="images for the FLOP pass (0 = all)")
     p.add_argument("--no-trace", action="store_true", help="skip the chrome trace file")
     p.add_argument("--threads", type=int, help="torch CPU threads")
@@ -184,15 +185,6 @@ def main() -> None:
     for row, f in zip(per_image, flops):
         row["flops"] = f["flops"]
 
-    # ---- torch.profiler
-    t0 = time.perf_counter()
-    try:
-        prof = P.torch_profile(lambda i: model.predict(root / rows[i % len(rows)]["file"], P.Stopwatch(device)),
-                               min(args.profile_images, len(rows)), device, out, trace=not args.no_trace)
-    except Exception as e:  # noqa: BLE001
-        prof = {"available": False, "reason": f"{type(e).__name__}: {e}"}
-    phases["profile"] = (t0, time.perf_counter())
-
     rss.stop()
     if gpu:
         time.sleep(0.3)
@@ -245,7 +237,7 @@ def main() -> None:
             "gpu_peak_allocated_mib_median": statistics.median([r["gpu_peak_allocated_mib"] for r in ok]) if on_gpu and ok else None},
         "gpu_sampling": {ph: gpu.summary(*phases[ph]) for ph in ("load", "warmup", "measure")} if gpu else None,
         "energy_j_per_image": None,
-        "torch_profiler": prof,
+        "torch_profiler": {"available": False, "reason": "not run (it runs after the results are saved)"},
         "detection": det, "localization": loc,
         "phases_s": {k: [a - t_origin, b - t_origin] for k, (a, b) in phases.items()},
     }
@@ -268,7 +260,25 @@ def main() -> None:
           + (f" | GPU peak {summary['memory']['gpu_peak_allocated_mib_max']:.0f} MiB" if on_gpu else ""))
     print(f"detection AUC {det['roc_auc']:.3f} AP {det['ap']:.3f} | localization F1 {loc.get('f1') or float('nan'):.3f} "
           f"IoU {loc.get('iou') or float('nan'):.3f} pixel-AUC {loc.get('pixel_auc') or float('nan'):.3f}")
-    print(f"wrote {out}")
+    print(f"wrote {out}", flush=True)
+
+    # ---- torch.profiler, last: everything above is already saved if it is slow or interrupted.
+    # ForMa's PyTorch selective-scan fallback launches a huge number of small operators, so it
+    # gets 1 image and no trace unless asked otherwise.
+    n_prof = min(len(rows), args.profile_images if args.profile_images is not None else (1 if args.model == "forma" else 3))
+    trace = not args.no_trace and not (args.model == "forma" and args.profile_images is None)
+    print(f"torch.profiler on {n_prof} image(s){' + trace' if trace else ''}...", flush=True)
+    t0 = time.perf_counter()
+    try:
+        prof = P.torch_profile(lambda i: model.predict(root / rows[i % len(rows)]["file"], P.Stopwatch(device)),
+                               min(n_prof, len(rows)), device, out, trace=trace)
+    except Exception as e:  # noqa: BLE001
+        prof = {"available": False, "reason": f"{type(e).__name__}: {e}"}
+    phases["profile"] = (t0, time.perf_counter())
+    summary["torch_profiler"] = prof
+    summary["phases_s"]["profile"] = [phases["profile"][0] - t_origin, phases["profile"][1] - t_origin]
+    P.write_json(out / "profile.json", summary)
+    print(f"profiler done in {phases['profile'][1] - t0:.0f} s", flush=True)
 
 
 if __name__ == "__main__":

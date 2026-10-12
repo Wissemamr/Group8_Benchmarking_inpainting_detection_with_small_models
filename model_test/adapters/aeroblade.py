@@ -50,11 +50,13 @@ class Model:
         with sw("preprocess"):
             img = Image.open(path).convert("RGB")
             w, h = img.size
-            x = imaging.to_tensor(img.resize((self.size, self.size), Image.BICUBIC)).to(self.device)
+            # plain tensor: torchvision's Image subclass breaks the FLOP counter
+            x = imaging.to_tensor(img.resize((self.size, self.size), Image.BICUBIC)).as_subclass(torch.Tensor)
+            x = x.to(self.device)
         with sw("forward_autoencoder"):
             rec = reconstruct(self.ae, imaging.pad_to_multiple(x), 1)[..., :self.size, :self.size]
         with sw("png_round_trip"):
-            rec = imaging.to_tensor(to_pil_image(rec[0].cpu())).to(self.device)
+            rec = imaging.to_tensor(to_pil_image(rec[0].cpu())).as_subclass(torch.Tensor).to(self.device)
         with sw("forward_lpips"):
             dist = float(self.lpips(x, rec, pad=0).mean())
             err = self.lpips(x, rec, pad=16)[0, 0].cpu().numpy()

@@ -244,11 +244,38 @@ class FlopRecorder:
                 "by_op": dict(self.by_op)}
 
 
+class _InferenceModeAsNoGrad:
+    """FlopCounterMode sees nothing inside torch.inference_mode (PyTorch 2.1), which AEROBLADE and ForMa
+    use; for the FLOP pass only, inference_mode is made to behave like no_grad (same computation)."""
+
+    def __enter__(self):
+        cls = getattr(torch, "inference_mode", None)
+        self.cls = cls if isinstance(cls, type) else None
+        if self.cls is not None:
+            self.orig = (self.cls.__enter__, self.cls.__exit__)
+
+            def enter(ctx):
+                ctx._mt_no_grad = torch.no_grad()
+                ctx._mt_no_grad.__enter__()
+
+            def exit_(ctx, *exc):
+                ctx._mt_no_grad.__exit__(*exc)
+
+            self.cls.__enter__, self.cls.__exit__ = enter, exit_
+        return self
+
+    def __exit__(self, *exc):
+        if self.cls is not None:
+            self.cls.__enter__, self.cls.__exit__ = self.orig
+        return False
+
+
 def count_flops(predict) -> dict:
     """FLOPs of one prediction: `predict(recorder)` must route its stages through the recorder."""
     rec = FlopRecorder()
     try:
-        predict(rec)
+        with _InferenceModeAsNoGrad():
+            predict(rec)
         return rec.result()
     except Exception as e:  # noqa: BLE001
         return {"flops": None, "method": f"failed: {type(e).__name__}: {str(e)[:200]}"}
