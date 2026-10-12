@@ -3,7 +3,7 @@
 **Data Readiness and AI Evaluation — Course Project**
 
 
-``Pr. Adrian Popescu``
+``Pr. Adrian Popescu and Dr. Eva Feillet``
 
 ## Collaborators
 
