@@ -1,0 +1,66 @@
+image_id,source_id,category,generator,mask_type,variant,label,width,height,file,mask_file
+real_52412,52412,airplane,real,none,-1,0,1024,681,orig/testing/airplane/52412_orig.png,
+ps_52412_bbox_0,52412,airplane,PS,bbox,0,1,1024,681,ps-sp/testing/airplane/52412_mask_bbox.png_ps_0.png,masks/testing/airplane/52412_mask_bbox.png_ps_mask.png
+ps_52412_segm_0,52412,airplane,PS,segm,0,1,1024,681,ps-sp/testing/airplane/52412_mask_segm.png_ps_0.png,masks/testing/airplane/52412_mask_segm.png_ps_mask.png
+sd_52412_bbox_0,52412,airplane,SD,bbox,0,1,1024,681,sd2-sp/testing/airplane/52412_mask_bbox.png_ps_mask.png_sd2_0.png,masks/testing/airplane/52412_mask_bbox.png_ps_mask.png
+sd_52412_segm_0,52412,airplane,SD,segm,0,1,1024,681,sd2-sp/testing/airplane/52412_mask_segm.png_ps_mask.png_sd2_0.png,masks/testing/airplane/52412_mask_segm.png_ps_mask.png
+real_312586,312586,bear,real,none,-1,0,1024,685,orig/testing/bear/312586_orig.png,
+ps_312586_bbox_0,312586,bear,PS,bbox,0,1,1024,685,ps-sp/testing/bear/312586_mask_bbox.png_ps_0.png,masks/testing/bear/312586_mask_bbox.png_ps_mask.png
+ps_312586_segm_0,312586,bear,PS,segm,0,1,1024,685,ps-sp/testing/bear/312586_mask_segm.png_ps_0.png,masks/testing/bear/312586_mask_segm.png_ps_mask.png
+sd_312586_bbox_0,312586,bear,SD,bbox,0,1,1024,685,sd2-sp/testing/bear/312586_mask_bbox.png_ps_mask.png_sd2_0.png,masks/testing/bear/312586_mask_bbox.png_ps_mask.png
+sd_312586_segm_0,312586,bear,SD,segm,0,1,1024,685,sd2-sp/testing/bear/312586_mask_segm.png_ps_mask.png_sd2_0.png,masks/testing/bear/312586_mask_segm.png_ps_mask.png
+real_556765,556765,elephant,real,none,-1,0,774,518,orig/testing/elephant/556765_orig.png,
+ps_556765_bbox_0,556765,elephant,PS,bbox,0,1,774,518,ps-sp/testing/elephant/556765_mask_bbox.png_ps_0.png,masks/testing/elephant/556765_mask_bbox.png_ps_mask.png
+ps_556765_segm_0,556765,elephant,PS,segm,0,1,774,518,ps-sp/testing/elephant/556765_mask_segm.png_ps_0.png,masks/testing/elephant/556765_mask_segm.png_ps_mask.png
+sd_556765_bbox_0,556765,elephant,SD,bbox,0,1,774,518,sd2-sp/testing/elephant/556765_mask_bbox.png_ps_mask.png_sd2_0.png,masks/testing/elephant/556765_mask_bbox.png_ps_mask.png
+sd_556765_segm_0,556765,elephant,SD,segm,0,1,774,518,sd2-sp/testing/elephant/556765_mask_segm.png_ps_mask.png_sd2_0.png,masks/testing/elephant/556765_mask_segm.png_ps_mask.png
+real_350002,350002,hair drier,real,none,-1,0,683,1024,orig/testing/hair drier/350002_orig.png,
+ps_350002_bbox_0,350002,hair drier,PS,bbox,0,1,683,1024,ps-sp/testing/hair drier/350002_mask_bbox.png_ps_0.png,masks/testing/hair drier/350002_mask_bbox.png_ps_mask.png
+ps_350002_segm_0,350002,hair drier,PS,segm,0,1,683,1024,ps-sp/testing/hair drier/350002_mask_segm.png_ps_0.png,masks/testing/hair drier/350002_mask_segm.png_ps_mask.png
+sd_350002_bbox_0,350002,hair drier,SD,bbox,0,1,683,1024,sd2-sp/testing/hair drier/350002_mask_bbox.png_ps_mask.png_sd2_0.png,masks/testing/hair drier/350002_mask_bbox.png_ps_mask.png
+sd_350002_segm_0,350002,hair drier,SD,segm,0,1,683,1024,sd2-sp/testing/hair drier/350002_mask_segm.png_ps_mask.png_sd2_0.png,masks/testing/hair drier/350002_mask_segm.png_ps_mask.png
+real_570756,570756,kite,real,none,-1,0,1023,685,orig/testing/kite/570756_orig.png,
+ps_570756_bbox_0,570756,kite,PS,bbox,0,1,1023,685,ps-sp/testing/kite/570756_mask_bbox.png_ps_0.png,masks/testing/kite/570756_mask_bbox.png_ps_mask.png
+ps_570756_segm_0,570756,kite,PS,segm,0,1,1023,685,ps-sp/testing/kite/570756_mask_segm.png_ps_0.png,masks/testing/kite/570756_mask_segm.png_ps_mask.png
+sd_570756_bbox_0,570756,kite,SD,bbox,0,1,1023,685,sd2-sp/testing/kite/570756_mask_bbox.png_ps_mask.png_sd2_0.png,masks/testing/kite/570756_mask_bbox.png_ps_mask.png
+sd_570756_segm_0,570756,kite,SD,segm,0,1,1023,685,sd2-sp/testing/kite/570756_mask_segm.png_ps_mask.png_sd2_0.png,masks/testing/kite/570756_mask_segm.png_ps_mask.png
+real_251824,251824,scissors,real,none,-1,0,800,600,orig/testing/scissors/251824_orig.png,
+ps_251824_bbox_0,251824,scissors,PS,bbox,0,1,800,600,ps-sp/testing/scissors/251824_mask_bbox.png_ps_0.png,masks/testing/scissors/251824_mask_bbox.png_ps_mask.png
+ps_251824_segm_0,251824,scissors,PS,segm,0,1,800,600,ps-sp/testing/scissors/251824_mask_segm.png_ps_0.png,masks/testing/scissors/251824_mask_segm.png_ps_mask.png
+sd_251824_bbox_0,251824,scissors,SD,bbox,0,1,800,600,sd2-sp/testing/scissors/251824_mask_bbox.png_ps_mask.png_sd2_0.png,masks/testing/scissors/251824_mask_bbox.png_ps_mask.png
+sd_251824_segm_0,251824,scissors,SD,segm,0,1,800,600,sd2-sp/testing/scissors/251824_mask_segm.png_ps_mask.png_sd2_0.png,masks/testing/scissors/251824_mask_segm.png_ps_mask.png
+real_375763,375763,sheep,real,none,-1,0,1024,768,orig/testing/sheep/375763_orig.png,
+ps_375763_bbox_0,375763,sheep,PS,bbox,0,1,1024,768,ps-sp/testing/sheep/375763_mask_bbox.png_ps_0.png,masks/testing/sheep/375763_mask_bbox.png_ps_mask.png
+ps_375763_segm_0,375763,sheep,PS,segm,0,1,1024,768,ps-sp/testing/sheep/375763_mask_segm.png_ps_0.png,masks/testing/sheep/375763_mask_segm.png_ps_mask.png
+sd_375763_bbox_0,375763,sheep,SD,bbox,0,1,1024,768,sd2-sp/testing/sheep/375763_mask_bbox.png_ps_mask.png_sd2_0.png,masks/testing/sheep/375763_mask_bbox.png_ps_mask.png
+sd_375763_segm_0,375763,sheep,SD,segm,0,1,1024,768,sd2-sp/testing/sheep/375763_mask_segm.png_ps_mask.png_sd2_0.png,masks/testing/sheep/375763_mask_segm.png_ps_mask.png
+real_473121,473121,skis,real,none,-1,0,1024,680,orig/testing/skis/473121_orig.png,
+ps_473121_bbox_0,473121,skis,PS,bbox,0,1,1024,680,ps-sp/testing/skis/473121_mask_bbox.png_ps_0.png,masks/testing/skis/473121_mask_bbox.png_ps_mask.png
+ps_473121_segm_0,473121,skis,PS,segm,0,1,1024,680,ps-sp/testing/skis/473121_mask_segm.png_ps_0.png,masks/testing/skis/473121_mask_segm.png_ps_mask.png
+sd_473121_bbox_0,473121,skis,SD,bbox,0,1,1024,680,sd2-sp/testing/skis/473121_mask_bbox.png_ps_mask.png_sd2_0.png,masks/testing/skis/473121_mask_bbox.png_ps_mask.png
+sd_473121_segm_0,473121,skis,SD,segm,0,1,1024,680,sd2-sp/testing/skis/473121_mask_segm.png_ps_mask.png_sd2_0.png,masks/testing/skis/473121_mask_segm.png_ps_mask.png
+real_447465,447465,snowboard,real,none,-1,0,1024,682,orig/testing/snowboard/447465_orig.png,
+ps_447465_bbox_0,447465,snowboard,PS,bbox,0,1,1024,682,ps-sp/testing/snowboard/447465_mask_bbox.png_ps_0.png,masks/testing/snowboard/447465_mask_bbox.png_ps_mask.png
+ps_447465_segm_0,447465,snowboard,PS,segm,0,1,1024,682,ps-sp/testing/snowboard/447465_mask_segm.png_ps_0.png,masks/testing/snowboard/447465_mask_segm.png_ps_mask.png
+sd_447465_bbox_0,447465,snowboard,SD,bbox,0,1,1024,682,sd2-sp/testing/snowboard/447465_mask_bbox.png_ps_mask.png_sd2_0.png,masks/testing/snowboard/447465_mask_bbox.png_ps_mask.png
+sd_447465_segm_0,447465,snowboard,SD,segm,0,1,1024,682,sd2-sp/testing/snowboard/447465_mask_segm.png_ps_mask.png_sd2_0.png,masks/testing/snowboard/447465_mask_segm.png_ps_mask.png
+real_371552,371552,sports ball,real,none,-1,0,1024,683,orig/testing/sports ball/371552_orig.png,
+ps_371552_bbox_0,371552,sports ball,PS,bbox,0,1,1024,683,ps-sp/testing/sports ball/371552_mask_bbox.png_ps_0.png,masks/testing/sports ball/371552_mask_bbox.png_ps_mask.png
+ps_371552_segm_0,371552,sports ball,PS,segm,0,1,1024,683,ps-sp/testing/sports ball/371552_mask_segm.png_ps_0.png,masks/testing/sports ball/371552_mask_segm.png_ps_mask.png
+sd_371552_bbox_0,371552,sports ball,SD,bbox,0,1,1024,683,sd2-sp/testing/sports ball/371552_mask_bbox.png_ps_mask.png_sd2_0.png,masks/testing/sports ball/371552_mask_bbox.png_ps_mask.png
+sd_371552_segm_0,371552,sports ball,SD,segm,0,1,1024,683,sd2-sp/testing/sports ball/371552_mask_segm.png_ps_mask.png_sd2_0.png,masks/testing/sports ball/371552_mask_segm.png_ps_mask.png
+real_414133,414133,stop sign,real,none,-1,0,1024,768,orig/testing/stop sign/414133_orig.png,
+ps_414133_bbox_0,414133,stop sign,PS,bbox,0,1,1024,768,ps-sp/testing/stop sign/414133_mask_bbox.png_ps_0.png,masks/testing/stop sign/414133_mask_bbox.png_ps_mask.png
+ps_414133_segm_0,414133,stop sign,PS,segm,0,1,1024,768,ps-sp/testing/stop sign/414133_mask_segm.png_ps_0.png,masks/testing/stop sign/414133_mask_segm.png_ps_mask.png
+sd_414133_bbox_0,414133,stop sign,SD,bbox,0,1,1024,768,sd2-sp/testing/stop sign/414133_mask_bbox.png_ps_mask.png_sd2_0.png,masks/testing/stop sign/414133_mask_bbox.png_ps_mask.png
+sd_414133_segm_0,414133,stop sign,SD,segm,0,1,1024,768,sd2-sp/testing/stop sign/414133_mask_segm.png_ps_mask.png_sd2_0.png,masks/testing/stop sign/414133_mask_segm.png_ps_mask.png
+real_403122,403122,tennis racket,real,none,-1,0,683,1024,orig/testing/tennis racket/403122_orig.png,
+ps_403122_bbox_0,403122,tennis racket,PS,bbox,0,1,683,1024,ps-sp/testing/tennis racket/403122_mask_bbox.png_ps_0.png,masks/testing/tennis racket/403122_mask_bbox.png_ps_mask.png
+ps_403122_segm_0,403122,tennis racket,PS,segm,0,1,683,1024,ps-sp/testing/tennis racket/403122_mask_segm.png_ps_0.png,masks/testing/tennis racket/403122_mask_segm.png_ps_mask.png
+sd_403122_bbox_0,403122,tennis racket,SD,bbox,0,1,683,1024,sd2-sp/testing/tennis racket/403122_mask_bbox.png_ps_mask.png_sd2_0.png,masks/testing/tennis racket/403122_mask_bbox.png_ps_mask.png
+sd_403122_segm_0,403122,tennis racket,SD,segm,0,1,683,1024,sd2-sp/testing/tennis racket/403122_mask_segm.png_ps_mask.png_sd2_0.png,masks/testing/tennis racket/403122_mask_segm.png_ps_mask.png
+real_516316,516316,zebra,real,none,-1,0,1024,768,orig/testing/zebra/516316_orig.png,
+ps_516316_bbox_0,516316,zebra,PS,bbox,0,1,1024,768,ps-sp/testing/zebra/516316_mask_bbox.png_ps_0.png,masks/testing/zebra/516316_mask_bbox.png_ps_mask.png
+ps_516316_segm_0,516316,zebra,PS,segm,0,1,1024,768,ps-sp/testing/zebra/516316_mask_segm.png_ps_0.png,masks/testing/zebra/516316_mask_segm.png_ps_mask.png
+sd_516316_bbox_0,516316,zebra,SD,bbox,0,1,1024,768,sd2-sp/testing/zebra/516316_mask_bbox.png_ps_mask.png_sd2_0.png,masks/testing/zebra/516316_mask_bbox.png_ps_mask.png
+sd_516316_segm_0,516316,zebra,SD,segm,0,1,1024,768,sd2-sp/testing/zebra/516316_mask_segm.png_ps_mask.png_sd2_0.png,masks/testing/zebra/516316_mask_segm.png_ps_mask.png

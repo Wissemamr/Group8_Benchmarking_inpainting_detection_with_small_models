@@ -1,0 +1,6 @@
+# Code fetched by setup_models.py
+/third_party/
+# Written by check_envs.py on each machine (env names differ between machines)
+/envs.json
+# Large profiler traces: open locally in chrome://tracing or ui.perfetto.dev, share separately if needed
+/outputs/*/trace.json.gz
