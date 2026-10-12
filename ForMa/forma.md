@@ -553,3 +553,155 @@ on matched sources and report macro F1/IoU separately from runtime and memory.
 ```
 python ForMa/evaluate_tgif_category.py --subset sd2-sp --category all --device cpu --threads 4
 ```
+
+## 16. Localization summary by category and generator (12 October 2026)
+
+Source: [results/results_excel.xlsx](results/results_excel.xlsx), `images` sheet. Values below are **macro averages of per-image localization scores**, on a 0?1 scale, rounded to four decimals. Bounding-box and segmentation examples are combined; each generator has 1,029 images of each mask type. Both generators cover the same 343 source IDs and 13 categories, with 2,058 evaluated images per generator.
+
+Each category row gives every evaluated image equal weight. All seven metrics are defined for every image in this snapshot. F1 and Dice are identical by definition in this binary evaluator; they are both displayed to match the workbook. These are localization metrics, not image-level detection metrics.
+
+### Per-category macro localization results
+
+| Category | Generator | Images | Sources | Macro F1 | Macro recall | Macro precision | Macro IoU | Macro Dice | Macro specificity | Macro pixel accuracy |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| airplane | Photoshop / Firefly (PS-sp) | 168 | 28 | 0.4318 | 0.3910 | 0.6632 | 0.3228 | 0.4318 | 0.9735 | 0.9412 |
+| airplane | Stable Diffusion 2 (SD2-sp) | 168 | 28 | 0.4856 | 0.4755 | 0.6301 | 0.3941 | 0.4856 | 0.9700 | 0.9449 |
+| bear | Photoshop / Firefly (PS-sp) | 120 | 20 | 0.4648 | 0.3993 | 0.7038 | 0.3452 | 0.4648 | 0.9797 | 0.9088 |
+| bear | Stable Diffusion 2 (SD2-sp) | 120 | 20 | 0.3449 | 0.3018 | 0.5154 | 0.2570 | 0.3449 | 0.9582 | 0.8801 |
+| elephant | Photoshop / Firefly (PS-sp) | 210 | 35 | 0.4354 | 0.3562 | 0.6768 | 0.3246 | 0.4354 | 0.9895 | 0.9073 |
+| elephant | Stable Diffusion 2 (SD2-sp) | 210 | 35 | 0.2745 | 0.2295 | 0.4793 | 0.1981 | 0.2745 | 0.9776 | 0.8814 |
+| hair-drier | Photoshop / Firefly (PS-sp) | 12 | 2 | 0.4103 | 0.3287 | 0.6280 | 0.2700 | 0.4103 | 0.9851 | 0.9253 |
+| hair-drier | Stable Diffusion 2 (SD2-sp) | 12 | 2 | 0.1552 | 0.1213 | 0.3354 | 0.0950 | 0.1552 | 0.9813 | 0.9056 |
+| kite | Photoshop / Firefly (PS-sp) | 186 | 31 | 0.3488 | 0.3156 | 0.6081 | 0.2413 | 0.3488 | 0.9831 | 0.9464 |
+| kite | Stable Diffusion 2 (SD2-sp) | 186 | 31 | 0.2872 | 0.2726 | 0.4682 | 0.2095 | 0.2872 | 0.9751 | 0.9390 |
+| scissors | Photoshop / Firefly (PS-sp) | 54 | 9 | 0.1444 | 0.1518 | 0.2057 | 0.0939 | 0.1444 | 0.9639 | 0.9193 |
+| scissors | Stable Diffusion 2 (SD2-sp) | 54 | 9 | 0.1501 | 0.1287 | 0.2476 | 0.1021 | 0.1501 | 0.9700 | 0.9231 |
+| sheep | Photoshop / Firefly (PS-sp) | 168 | 28 | 0.3079 | 0.2788 | 0.5111 | 0.2165 | 0.3079 | 0.9844 | 0.9269 |
+| sheep | Stable Diffusion 2 (SD2-sp) | 168 | 28 | 0.2119 | 0.1882 | 0.4029 | 0.1420 | 0.2119 | 0.9775 | 0.9144 |
+| skis | Photoshop / Firefly (PS-sp) | 264 | 44 | 0.0985 | 0.1571 | 0.1146 | 0.0615 | 0.0985 | 0.9691 | 0.9481 |
+| skis | Stable Diffusion 2 (SD2-sp) | 264 | 44 | 0.0828 | 0.1385 | 0.0963 | 0.0498 | 0.0828 | 0.9688 | 0.9460 |
+| snowboard | Photoshop / Firefly (PS-sp) | 120 | 20 | 0.2170 | 0.3505 | 0.2094 | 0.1444 | 0.2170 | 0.9615 | 0.9471 |
+| snowboard | Stable Diffusion 2 (SD2-sp) | 120 | 20 | 0.1898 | 0.3114 | 0.1765 | 0.1235 | 0.1898 | 0.9586 | 0.9438 |
+| sports-ball | Photoshop / Firefly (PS-sp) | 132 | 22 | 0.2458 | 0.3819 | 0.2536 | 0.1819 | 0.2458 | 0.9541 | 0.9420 |
+| sports-ball | Stable Diffusion 2 (SD2-sp) | 132 | 22 | 0.2549 | 0.3923 | 0.2425 | 0.2000 | 0.2549 | 0.9562 | 0.9446 |
+| stop-sign | Photoshop / Firefly (PS-sp) | 120 | 20 | 0.6128 | 0.5648 | 0.8029 | 0.4773 | 0.6128 | 0.9886 | 0.9520 |
+| stop-sign | Stable Diffusion 2 (SD2-sp) | 120 | 20 | 0.5193 | 0.4992 | 0.6945 | 0.4109 | 0.5193 | 0.9790 | 0.9354 |
+| tennis-racket | Photoshop / Firefly (PS-sp) | 282 | 47 | 0.2207 | 0.3479 | 0.2331 | 0.1474 | 0.2207 | 0.9608 | 0.9456 |
+| tennis-racket | Stable Diffusion 2 (SD2-sp) | 282 | 47 | 0.1769 | 0.3019 | 0.1730 | 0.1171 | 0.1769 | 0.9587 | 0.9429 |
+| zebra | Photoshop / Firefly (PS-sp) | 222 | 37 | 0.3557 | 0.3085 | 0.5777 | 0.2487 | 0.3557 | 0.9750 | 0.8912 |
+| zebra | Stable Diffusion 2 (SD2-sp) | 222 | 37 | 0.2527 | 0.2327 | 0.3898 | 0.1759 | 0.2527 | 0.9623 | 0.8754 |
+
+### Overall macro localization results
+
+The equal-image average gives more influence to categories with more images. The equal-category average gives each of the 13 categories the same weight. Neither is a pooled-pixel (micro) score. Image/source counts describe the evaluated dataset for both aggregations.
+
+| Aggregation | Generator | Images | Sources | Macro F1 | Macro recall | Macro precision | Macro IoU | Macro Dice | Macro specificity | Macro pixel accuracy |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| All images (equal image weight) | Photoshop / Firefly (PS-sp) | 2058 | 343 | 0.3150 | 0.3277 | 0.4542 | 0.2259 | 0.3150 | 0.9739 | 0.9316 |
+| All categories (equal category weight) | Photoshop / Firefly (PS-sp) | 2058 | 343 | 0.3303 | 0.3332 | 0.4760 | 0.2366 | 0.3303 | 0.9745 | 0.9309 |
+| All images (equal image weight) | Stable Diffusion 2 (SD2-sp) | 2058 | 343 | 0.2557 | 0.2806 | 0.3585 | 0.1865 | 0.2557 | 0.9677 | 0.9226 |
+| All categories (equal category weight) | Stable Diffusion 2 (SD2-sp) | 2058 | 343 | 0.2605 | 0.2764 | 0.3732 | 0.1904 | 0.2605 | 0.9687 | 0.9213 |
+
+### Configuration and traceability
+
+Both subsets use the same checkpoint, 512 ? 512 model input, prediction threshold strictly greater than 0.5, grayscale ground-truth threshold strictly greater than 127, and nearest-neighbor resizing of predicted probabilities to original image resolution. Their evaluation IDs are kept separate:
+
+- **Photoshop / Firefly (PS-sp):** `bce894a835eecfa44c2cea8272f14c3ba7bfb64ba11efcd5d1c4544c4d29b7b0`.
+- **Stable Diffusion 2 (SD2-sp):** `bd5b2f0d76759cb101333c655ca249a21a5db2ed7e1c76efe640a8831251c10a`.
+
+Category means were checked against the workbook?s `category_summary` rows with `mask_type=all`. These tables are descriptive point estimates; they do not include confidence intervals or establish statistical significance for generator differences.
+
+
+## 17. Image detection from saved localization decisions
+
+`evaluate_detection.py` derives an image score from the existing pixel confusion
+counts without rerunning ForMa. For every image, predicted manipulated area is
+`(TP + FP) / (TP + FP + FN + TN)`. Although these counts were stored during mask
+evaluation, their sum TP+FP depends only on the predicted binary mask. No ground-truth
+mask is used as a detection feature. The score is a fraction of image area, not a
+calibrated probability that the image is forged. It uses the saved pixel threshold
+(0.5 in the current workbook); changing that threshold requires new inference.
+
+Export scores for both generators and all categories:
+
+```powershell
+python ForMa/evaluate_detection.py
+```
+
+This exports `results/detection/scores_only/image_scores.csv` and `report.json`.
+The current workbook covers 4,116 manipulated images from 343 sources across 13
+categories. The script checks configuration consistency and duplicate samples;
+it operates on saved rows, so partial workbooks yield partial detection exports.
+
+To generate binary predictions, explicitly supply an image-level threshold:
+
+```powershell
+# Illustrative only: 0.01 means strictly more than 1% predicted manipulated pixels.
+# This value has NOT been validated and must not be presented as an optimized detector.
+python ForMa/evaluate_detection.py --image-threshold 0.01
+```
+
+Thresholded exports go under `results/detection/threshold_0.01/`. A prediction is
+`inpainted` when `area_score > image_threshold`; ties predict `authentic`. The
+`recall_summary.csv` reports detected/missed manipulated images and recall overall,
+by generator, by category, and by generator/category. A predicted authentic label
+on this dataset is a missed manipulation, not evidence of a true negative.
+
+All current examples have label 1. Therefore this script intentionally does not
+report two-class accuracy, precision, F1, specificity, false-positive rate or ROC-AUC.
+An always-inpainted detector would attain recall 1 on these data. The localization
+F1 values previously reported are not detection F1. Small manipulated regions can
+be missed by an area threshold even when their localized pixels are correct.
+
+A complete binary detection evaluation additionally needs authentic examples and
+a separate validation set containing both classes, with source-grouped splits.
+Choose the score rule and threshold on validation, freeze them, then evaluate on
+held-out authentic and manipulated examples. Record class prevalence and avoid
+duplicating authentic originals merely to balance their many manipulated variants.
+No threshold calibration or authentic-image inference is implemented by this
+workbook-only script. Probability-based rules such as top-k mean cannot be
+recovered from pixel counts and require saved probabilities or new inference.
+
+
+## 18. Full binary detection with authentic test originals
+
+Run from the project root in the same environment as localization:
+
+```powershell
+.\.venv\Scripts\python.exe ForMa/evaluate_full_detection.py --image-threshold 0.01
+```
+
+The script evaluates one `data_tgif/original/testing/<category>/<source>_orig.png`
+per source. All 343 plain originals match the manipulated image dimensions; the
+512/1024 suffixed versions are not counted as extra authentic examples. The
+4,116 manipulated area scores are recovered from saved pixel counts. The model
+checkpoint, input size, pixel threshold, device, thread count and PyTorch version
+are matched to the saved evaluation. Authentic scores are cached for resuming.
+
+The fixed image decision is area_score > 0.01, reusing the previously chosen
+illustrative threshold without optimizing on this test set. This is a derived
+ForMa detector, not a separately trained classification head. Results for this
+threshold are exploratory because it was not independently calibrated.
+
+Outputs appear in `results/full_detection/complete/threshold_0.01/`:
+
+- `image_predictions.csv`: all 4,459 unique test images and their binary predictions.
+- `detection_summary.csv`: confusion counts, accuracy, precision, recall, F1,
+  specificity, false-positive rate, balanced accuracy, ROC-AUC and average precision.
+- `detection_results.xlsx`: per-image and summary sheets.
+- `report.json`: score rule, configuration, coverage and provenance.
+
+Summary rows include combined results, PS-sp versus authentic, SD2-sp versus
+authentic, and every category in each comparison. The same 343 authentic scores
+are reused for the two separate generator comparisons, but counted only once in
+the combined result. Generator comparisons each contain 2,401 images; the combined
+comparison contains 4,459. Precision, F1, accuracy and average precision depend on
+this imbalanced class composition. Do not average generator confusion tables to
+get combined counts, because that would duplicate authentic samples.
+
+ROC-AUC uses the continuous area score and average ranks for tied scores; average
+precision groups equal scores before accumulating precision/recall. Neither uses
+a sweep to select the reported threshold. These are image-level binary metrics,
+not averages of localization metrics. Source-level dependence remains, and no
+confidence intervals are calculated here. With `--limit N`, only N authentic
+sources and their matching manipulations are exported under `partial/`.
