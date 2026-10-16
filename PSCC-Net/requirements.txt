@@ -1,0 +1,13 @@
+# Python 3.11 (tested with 3.11.16). Install torch from the PyTorch index for your device, see README:
+#   CPU : pip install -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cpu
+#   CUDA: pip install -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cu126
+# infer.py
+torch==2.14.0
+numpy==2.4.6
+pillow==12.3.0
+yacs==0.1.8
+# results.ipynb
+pandas==3.0.6
+matplotlib==3.11.2
+ipykernel==7.4.0
+nbconvert==7.16.6

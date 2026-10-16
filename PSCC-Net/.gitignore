@@ -1,0 +1,16 @@
+# Large or third-party inputs: download them (see README), never commit
+checkpoint/
+tgif/
+*.pth
+
+# Local-only files (old runs, visualisations, unused upstream code)
+outputs_local/
+
+# Python / Jupyter / IDE
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.idea/
+.vscode/
+.venv*/
+venv/
