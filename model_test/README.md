@@ -75,7 +75,7 @@ the PSCC checkpoints) are read into CPU memory.
 |---|---|---|---|
 | AEROBLADE | resized to 512x512 | −AEROBLADE distance (> −0.0521, the full TGIF run's cross-fitted Youden point) | 1 − normalized LPIPS error, Otsu |
 | TruFor | full resolution | official integrity score (> 0.5) | softmax map > 0.5 |
-| ForMa | resized to 512x512 | **derived**: mean of the top 1 % of its map (> 0.5); ForMa has no detection head | softmax map > 0.5 |
+| ForMa | resized to 512x512 | **derived**, as the group's `ForMa/evaluate_detection.py`: predicted area fraction (> 0, i.e. any pixel flagged); ForMa has no detection head | softmax map > 0.5 |
 | PSCC-Net | full resolution | detection head P(forged) (> 0.5, = official argmax) | sigmoid map > 0.5 |
 
 Each follows the group's own benchmark code for that model (`AEROBLADE/`, `TruFor/`, `ForMa/`) or the

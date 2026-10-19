@@ -1,8 +1,10 @@
 """ForMa, through the group's ForMa/inference.py: OpenCV RGB, linear resize to 512x512, /255,
 2-class logits at 1/4 resolution, foreground softmax nearest-resized to the original size, > 0.5.
 
-Detection score  ForMa has no detection head. The score used here is DERIVED: the mean of the
-                 top 1% foreground probabilities of the map; predicted "inpainted" when > 0.5.
+Detection score  ForMa has no detection head. As in the group's ForMa/evaluate_detection.py, the score
+                 is the predicted manipulated-area fraction (share of pixels > 0.5); "inpainted" when
+                 > 0 (any pixel flagged; the group sets no default threshold, so read the AUC). The
+                 mean of the top 1% of the map is kept as the extra column top1pct_score.
 Selective scan   uses the fastest backend importable in the env (CUDA kernels, Triton, or the plain
                  PyTorch fallback); the one used is recorded, since it changes the GPU timing a lot.
 """
@@ -42,9 +44,9 @@ import inference as forma_inference  # noqa: E402  (ForMa/inference.py)
 class Model:
     name = "ForMa"
     protocol = ("VMamba + Noiseprint, 512x512 input; map = softmax foreground, nearest resize, > 0.5; "
-                "score derived = mean of top-1% map values")
-    score_kind = "derived (top-1% mean of the map)"
-    det_threshold = 0.5
+                "score = predicted area fraction (group definition)")
+    score_kind = "derived (predicted area fraction, as ForMa/evaluate_detection.py)"
+    det_threshold = 0.0
 
     def __init__(self, device: str, opts: dict):
         self.device = device
@@ -72,6 +74,7 @@ class Model:
         with sw("postprocess"):
             prob, pred = forma_inference.prediction_maps(out, image.size, 0.5)
             flat = np.sort(prob.ravel())
-            score = float(flat[-max(1, flat.size // 100):].mean())
+            top1pct = float(flat[-max(1, flat.size // 100):].mean())
+            score = float(pred.mean())
         return {"score": score, "map": prob.astype(np.float32), "pred": pred,
-                "extra": {"backends": self.backends}}
+                "extra": {"top1pct_score": top1pct}}
