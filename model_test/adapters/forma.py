@@ -55,6 +55,8 @@ class Model:
             raise FileNotFoundError(f"{weights} missing: run python model_test/setup_models.py --only forma")
         self.model = forma_inference.load_model(weights, device)
         from models import csm_triton, csms6s  # noqa: E402  (ForMa/models, imported by load_model)
+        if opts.get("forma_no_triton"):
+            csm_triton.WITH_TRITON = False  # read at call time by cross_scan_fn / cross_merge_fn
         self.backends = {"triton": bool(csm_triton.WITH_TRITON),
                          "selective_scan_oflex": bool(csms6s.WITH_SELECTIVESCAN_OFLEX),
                          "selective_scan_core": bool(csms6s.WITH_SELECTIVESCAN_CORE),

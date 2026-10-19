@@ -81,6 +81,8 @@ def main() -> None:
     p.add_argument("--pscc-root", help="PSCC-Net folder (default: auto-detect)")
     p.add_argument("--pscc-threshold", type=float, default=0.5)
     p.add_argument("--forma-weights", help="ForMa checkpoint (default: ForMa/ForMa_weights/ForMa_weights.pth)")
+    p.add_argument("--forma-no-triton", action="store_true",
+                   help="ForMa: use the PyTorch cross-scan instead of Triton's (the selective-scan kernel is unaffected)")
     args = p.parse_args()
 
     device = ("cuda" if torch.cuda.is_available() else "cpu") if args.device == "auto" else args.device
@@ -110,7 +112,8 @@ def main() -> None:
 
     # ---- load
     t0 = time.perf_counter()
-    opts = {"pscc_root": args.pscc_root, "pscc_threshold": args.pscc_threshold, "forma_weights": args.forma_weights}
+    opts = {"pscc_root": args.pscc_root, "pscc_threshold": args.pscc_threshold, "forma_weights": args.forma_weights,
+            "forma_no_triton": args.forma_no_triton}
     model = importlib.import_module(MODELS[args.model]).Model(device, opts)
     P.sync(device)
     phases["load"] = (t0, time.perf_counter())
