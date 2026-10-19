@@ -42,6 +42,15 @@ and map previews. Commit and push `model_test/outputs/` to bring the results bac
 Quick check before the full run: `python model_test\run_all.py --limit 5`.
 One model only: `python model_test\run_all.py --models trufor`.
 
+### Or on Google Colab (Linux GPU, with ForMa's compiled kernel)
+
+Open [`colab_four_models.ipynb` in Colab](https://colab.research.google.com/github/Wissemamr/Group8_Benchmarking_inpainting_detection_with_small_models/blob/model-test-gpu/model_test/colab_four_models.ipynb),
+choose `Runtime > Change runtime type > T4 GPU`, then `Runtime > Run all` (~45-60 min). It builds a Python 3.10 env
+with the same versions as above, fetches the code and weights, **builds ForMa's `selective_scan` CUDA kernel**
+(VMamba `kernels/selective_scan`, which ForMa's README requires; it cannot be built on Windows), checks it against
+ForMa's PyTorch implementation, runs the 4 models on the same GPU and downloads a zip of
+`outputs_colab/` with the report.
+
 ### Environments
 
 `check_envs.py` probes every conda env (Python, PyTorch, CUDA working, packages) and, per model:
