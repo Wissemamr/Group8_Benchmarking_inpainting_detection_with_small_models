@@ -1,0 +1,18 @@
+{
+  "category": "sheep",
+  "source_id": "230166",
+  "image_path": "C:\\Users\\PC CABA DZ\\DRAIEVAL\\Group8_Benchmarking_inpainting_detection_with_small_models\\ForMa\\data_tgif\\original\\testing\\sheep\\230166_orig.png",
+  "image_name": "230166_orig.png",
+  "image_sha256": "fe7c326c97b20adf1b1cfaddca65059389915a1cc081172463ebe29dd38ca73d",
+  "subset": "authentic",
+  "mask_type": "none",
+  "variant": -1,
+  "y_true": 0,
+  "predicted_positive_pixels": 1397,
+  "total_pixels": 700755,
+  "area_score": 0.00199356408445177,
+  "pixel_threshold": 0.5,
+  "evaluation_id": "f849066fec192f997c0099176c05bdbf1539727b6feeae5c0b86ade0a7eb19a1",
+  "inference_and_postprocessing_seconds": 5.169095599791035,
+  "evaluated_at_utc": "2026-10-12T03:25:22.863702+00:00"
+}

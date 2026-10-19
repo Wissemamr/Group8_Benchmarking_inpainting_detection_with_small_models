@@ -1,0 +1,18 @@
+{
+  "category": "elephant",
+  "source_id": "48504",
+  "image_path": "C:\\Users\\PC CABA DZ\\DRAIEVAL\\Group8_Benchmarking_inpainting_detection_with_small_models\\ForMa\\data_tgif\\original\\testing\\elephant\\48504_orig.png",
+  "image_name": "48504_orig.png",
+  "image_sha256": "0f56134014b99fab4d51990945d0abf66be3fa8417b5b7880a1019c9eeb6a491",
+  "subset": "authentic",
+  "mask_type": "none",
+  "variant": -1,
+  "y_true": 0,
+  "predicted_positive_pixels": 56272,
+  "total_pixels": 699392,
+  "area_score": 0.08045845534407028,
+  "pixel_threshold": 0.5,
+  "evaluation_id": "f849066fec192f997c0099176c05bdbf1539727b6feeae5c0b86ade0a7eb19a1",
+  "inference_and_postprocessing_seconds": 6.141887799836695,
+  "evaluated_at_utc": "2026-10-12T03:19:44.148980+00:00"
+}

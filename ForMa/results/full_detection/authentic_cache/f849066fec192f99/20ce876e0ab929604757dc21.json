@@ -1,0 +1,18 @@
+{
+  "category": "snowboard",
+  "source_id": "447465",
+  "image_path": "C:\\Users\\PC CABA DZ\\DRAIEVAL\\Group8_Benchmarking_inpainting_detection_with_small_models\\ForMa\\data_tgif\\original\\testing\\snowboard\\447465_orig.png",
+  "image_name": "447465_orig.png",
+  "image_sha256": "771aaa70e49800cdffad0df9a4d68ac4c1e380325d4043f356fd9179418e26e5",
+  "subset": "authentic",
+  "mask_type": "none",
+  "variant": -1,
+  "y_true": 0,
+  "predicted_positive_pixels": 46464,
+  "total_pixels": 698368,
+  "area_score": 0.06653225806451613,
+  "pixel_threshold": 0.5,
+  "evaluation_id": "f849066fec192f997c0099176c05bdbf1539727b6feeae5c0b86ade0a7eb19a1",
+  "inference_and_postprocessing_seconds": 5.302680700086057,
+  "evaluated_at_utc": "2026-10-12T03:32:07.871620+00:00"
+}

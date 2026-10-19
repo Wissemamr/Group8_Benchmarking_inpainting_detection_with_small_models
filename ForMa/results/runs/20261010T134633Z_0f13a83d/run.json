@@ -1,0 +1,175 @@
+{
+  "arguments": {
+    "category": "snowboard",
+    "data_root": "C:\\Users\\PC CABA DZ\\DRAIEVAL\\Group8_Benchmarking_inpainting_detection_with_small_models\\ForMa\\data_tgif",
+    "output": "C:\\Users\\PC CABA DZ\\DRAIEVAL\\Group8_Benchmarking_inpainting_detection_with_small_models\\ForMa\\results\\results_excel.xlsx",
+    "weights": "C:\\Users\\PC CABA DZ\\DRAIEVAL\\Group8_Benchmarking_inpainting_detection_with_small_models\\ForMa\\ForMa_weights\\ForMa_weights.pth",
+    "device": "cpu",
+    "input_size": 512,
+    "threshold": 0.5,
+    "threads": 4,
+    "limit": null,
+    "subset": "sd2-sp",
+    "run_dir": null,
+    "profile": false,
+    "check_only": false
+  },
+  "subset": "sd2-sp",
+  "category": "snowboard",
+  "run_id": "20261010T134633Z_0f13a83d",
+  "started_at_utc": "2026-10-10T13:46:33.933074+00:00",
+  "status": "completed",
+  "profiled": false,
+  "code_sha256": {
+    "evaluate_tgif_category.py": "5e853533fdf7088730164b1796c30ca81365634d4cf608b9c0ebe5e087516c07",
+    "inference.py": "645108f27cb753f4b7a8dca96fe7c57b3fa329bb6295e4cfa2b8d82aa4e16b90",
+    "metrics.py": "47e20b937b50a60ac75c6703d622bebb2b5a5a9d6b8dab7d6608cae93c0d6969",
+    "run_stats.py": "e4ab0c702c5c991fca89235cdc73f8f174ed50839fb3a9c66b4e744bc8513365",
+    "models\\__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "models\\csm_triton.py": "cb4ca223ce2afc09e7d11967dda06ff0d72ac9cd9cdc97ea55fdf57c450aaa2b",
+    "models\\csms6s.py": "b4cc9465e6420a2fc43e4d1b8e8d2f4deb4f2a73447a5734898bd7cf520d0519",
+    "models\\DnCNN_noiseprint.py": "ff151c95a932062da348794efa4f4a5963eebcf5cb654b98b98e85c72ff95ad7",
+    "models\\vmamba_pixelshuf_modals.py": "1b1b49eb8ac34624167113edc2e681d4ac636103daa93c90112a0b611960ff34"
+  },
+  "evaluation_id": "bd5b2f0d76759cb101333c655ca249a21a5db2ed7e1c76efe640a8831251c10a",
+  "configuration": {
+    "protocol": "forma-sd2-sp-v1",
+    "checkpoint_sha256": "3c28719a48848411c4647e2460887d9a5d6eb64f2c3e3a77f5061c686925c2ee",
+    "input_size": 512,
+    "prediction_threshold": 0.5,
+    "ground_truth_threshold": 127,
+    "postprocessing": "class-1 softmax; nearest resize; strict greater-than thresholds",
+    "device": "cpu",
+    "threads": 4,
+    "torch_version": "2.14.0+cpu"
+  },
+  "selected_images": 120,
+  "skipped_images": 0,
+  "discovered_images": 120,
+  "parameter_count": 37255319,
+  "available_backends": {
+    "models.csms6s": {
+      "WITH_SELECTIVESCAN_CORE": false,
+      "WITH_SELECTIVESCAN_MAMBA": false,
+      "WITH_SELECTIVESCAN_OFLEX": false
+    },
+    "models.csm_triton": {
+      "WITH_TRITON": false
+    }
+  },
+  "error": null,
+  "completed_at_utc": "2026-10-10T14:04:50.153101+00:00",
+  "wall_seconds": 1096.013597899815,
+  "process_cpu_seconds": 2212.71875,
+  "newly_saved_images": 120,
+  "saved_images_per_wall_second": 0.10948769269828805,
+  "forward_only_images_per_second": 0.1890351411484361,
+  "max_sampled_rss_bytes": 981291008,
+  "stages": {
+    "discovery": {
+      "count": 1,
+      "total_seconds": 0.04110140004195273,
+      "mean_seconds": 0.04110140004195273,
+      "median_seconds": 0.04110140004195273,
+      "p95_seconds": 0.04110140004195273,
+      "min_seconds": 0.04110140004195273,
+      "max_seconds": 0.04110140004195273
+    },
+    "read_workbook": {
+      "count": 1,
+      "total_seconds": 2.0220262000802904,
+      "mean_seconds": 2.0220262000802904,
+      "median_seconds": 2.0220262000802904,
+      "p95_seconds": 2.0220262000802904,
+      "min_seconds": 2.0220262000802904,
+      "max_seconds": 2.0220262000802904
+    },
+    "hashing_and_resume": {
+      "count": 1,
+      "total_seconds": 0.7753713000565767,
+      "mean_seconds": 0.7753713000565767,
+      "median_seconds": 0.7753713000565767,
+      "p95_seconds": 0.7753713000565767,
+      "min_seconds": 0.7753713000565767,
+      "max_seconds": 0.7753713000565767
+    },
+    "model_load": {
+      "count": 1,
+      "total_seconds": 6.712229199940339,
+      "mean_seconds": 6.712229199940339,
+      "median_seconds": 6.712229199940339,
+      "p95_seconds": 6.712229199940339,
+      "min_seconds": 6.712229199940339,
+      "max_seconds": 6.712229199940339
+    },
+    "warmup": {
+      "count": 1,
+      "total_seconds": 5.329926800215617,
+      "mean_seconds": 5.329926800215617,
+      "median_seconds": 5.329926800215617,
+      "p95_seconds": 5.329926800215617,
+      "min_seconds": 5.329926800215617,
+      "max_seconds": 5.329926800215617
+    },
+    "preprocessing": {
+      "count": 120,
+      "total_seconds": 4.4093545011710376,
+      "mean_seconds": 0.03674462084309198,
+      "median_seconds": 0.03683530003763735,
+      "p95_seconds": 0.053363019856624304,
+      "min_seconds": 0.01816600002348423,
+      "max_seconds": 0.060876799980178475
+    },
+    "device_transfer": {
+      "count": 120,
+      "total_seconds": 0.00393220130354166,
+      "mean_seconds": 3.2768344196180504e-05,
+      "median_seconds": 3.250001464039087e-05,
+      "p95_seconds": 4.759990843012929e-05,
+      "min_seconds": 1.9700033590197563e-05,
+      "max_seconds": 5.559995770454407e-05
+    },
+    "forward": {
+      "count": 120,
+      "total_seconds": 634.8026048012543,
+      "mean_seconds": 5.29002170667712,
+      "median_seconds": 5.300816850038245,
+      "p95_seconds": 5.6734838200150985,
+      "min_seconds": 4.632731100078672,
+      "max_seconds": 5.775916000129655
+    },
+    "postprocessing_and_metrics": {
+      "count": 120,
+      "total_seconds": 2.2113109009806067,
+      "mean_seconds": 0.018427590841505057,
+      "median_seconds": 0.016874299966730177,
+      "p95_seconds": 0.029193089925684028,
+      "min_seconds": 0.01267540012486279,
+      "max_seconds": 0.034674599999561906
+    },
+    "workbook_write": {
+      "count": 120,
+      "total_seconds": 437.6547306010034,
+      "mean_seconds": 3.6471227550083616,
+      "median_seconds": 3.652102099964395,
+      "p95_seconds": 3.985561459942255,
+      "min_seconds": 3.070202099857852,
+      "max_seconds": 4.3293381000403315
+    }
+  },
+  "python": "3.12.13",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "processor": "Intel64 Family 6 Model 140 Stepping 1, GenuineIntel",
+  "logical_cpu_count": 8,
+  "packages": {
+    "torch": "2.14.0",
+    "numpy": "2.5.3",
+    "pandas": "3.0.6",
+    "Pillow": "12.3.0",
+    "opencv-python-headless": "5.0.0.93",
+    "psutil": "7.2.2"
+  },
+  "timing_notes": "Invocation excludes interpreter/import startup and report export. Stages are non-overlapping; other orchestration remains in wall time. Throughput counts newly saved images only. Forward statistics are across images, not repeated same-image latency trials.",
+  "memory_notes": "RSS sampled at phase boundaries, not a continuous peak; includes the Python process, model and workbook. Null if psutil unavailable. CUDA allocator peaks, when present, cover the measured loop after warmup and exclude non-PyTorch allocations.",
+  "profile_notes": "cProfile measures Python calls and adds overhead; it is not a GPU kernel trace or a clean latency benchmark."
+}

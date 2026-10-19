@@ -1,0 +1,69 @@
+{
+  "arguments": {
+    "category": "scissors",
+    "data_root": "C:\\Users\\PC CABA DZ\\DRAIEVAL\\Group8_Benchmarking_inpainting_detection_with_small_models\\ForMa\\data_tgif",
+    "output": "C:\\Users\\PC CABA DZ\\DRAIEVAL\\Group8_Benchmarking_inpainting_detection_with_small_models\\ForMa\\results\\results_excel.xlsx",
+    "weights": "C:\\Users\\PC CABA DZ\\DRAIEVAL\\Group8_Benchmarking_inpainting_detection_with_small_models\\ForMa\\ForMa_weights\\ForMa_weights.pth",
+    "device": "auto",
+    "input_size": 512,
+    "threshold": 0.5,
+    "threads": 4,
+    "limit": null,
+    "subset": "sd2-sp",
+    "run_dir": "ForMa\\results\\sd2_validation_runs",
+    "profile": false,
+    "check_only": true
+  },
+  "subset": "sd2-sp",
+  "category": "scissors",
+  "run_id": "20261008T063632Z_536c17c7",
+  "started_at_utc": "2026-10-08T06:36:32.692063+00:00",
+  "status": "completed",
+  "profiled": false,
+  "validated_images": 54,
+  "inference_performed": false,
+  "error": null,
+  "completed_at_utc": "2026-10-08T06:36:33.661419+00:00",
+  "wall_seconds": 0.9271656000055373,
+  "process_cpu_seconds": 0.125,
+  "newly_saved_images": 0,
+  "saved_images_per_wall_second": null,
+  "forward_only_images_per_second": null,
+  "max_sampled_rss_bytes": 230682624,
+  "stages": {
+    "discovery": {
+      "count": 1,
+      "total_seconds": 0.020387799944728613,
+      "mean_seconds": 0.020387799944728613,
+      "median_seconds": 0.020387799944728613,
+      "p95_seconds": 0.020387799944728613,
+      "min_seconds": 0.020387799944728613,
+      "max_seconds": 0.020387799944728613
+    },
+    "validate_dimensions": {
+      "count": 1,
+      "total_seconds": 0.9063448999077082,
+      "mean_seconds": 0.9063448999077082,
+      "median_seconds": 0.9063448999077082,
+      "p95_seconds": 0.9063448999077082,
+      "min_seconds": 0.9063448999077082,
+      "max_seconds": 0.9063448999077082
+    }
+  },
+  "python": "3.10.11",
+  "platform": "Windows-10-10.0.26200-SP0",
+  "processor": "Intel64 Family 6 Model 140 Stepping 1, GenuineIntel",
+  "logical_cpu_count": 8,
+  "packages": {
+    "torch": "2.7.1",
+    "numpy": "1.26.2",
+    "pandas": "2.3.1",
+    "Pillow": "11.3.0",
+    "opencv-python": "4.9.0.80",
+    "opencv-python-headless": "4.8.1.78",
+    "psutil": "5.9.6"
+  },
+  "timing_notes": "Invocation excludes interpreter/import startup and report export. Stages are non-overlapping; other orchestration remains in wall time. Throughput counts newly saved images only. Forward statistics are across images, not repeated same-image latency trials.",
+  "memory_notes": "RSS sampled at phase boundaries, not a continuous peak; includes the Python process, model and workbook. Null if psutil unavailable. CUDA allocator peaks, when present, cover the measured loop after warmup and exclude non-PyTorch allocations.",
+  "profile_notes": "cProfile measures Python calls and adds overhead; it is not a GPU kernel trace or a clean latency benchmark."
+}

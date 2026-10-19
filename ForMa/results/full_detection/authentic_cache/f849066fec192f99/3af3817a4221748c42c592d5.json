@@ -1,0 +1,18 @@
+{
+  "category": "skis",
+  "source_id": "424551",
+  "image_path": "C:\\Users\\PC CABA DZ\\DRAIEVAL\\Group8_Benchmarking_inpainting_detection_with_small_models\\ForMa\\data_tgif\\original\\testing\\skis\\424551_orig.png",
+  "image_name": "424551_orig.png",
+  "image_sha256": "bcdaca3c4bc74872d2000a8760f7eb94c1bd8c111c4b56727214c96c36326292",
+  "subset": "authentic",
+  "mask_type": "none",
+  "variant": -1,
+  "y_true": 0,
+  "predicted_positive_pixels": 19056,
+  "total_pixels": 786432,
+  "area_score": 0.02423095703125,
+  "pixel_threshold": 0.5,
+  "evaluation_id": "f849066fec192f997c0099176c05bdbf1539727b6feeae5c0b86ade0a7eb19a1",
+  "inference_and_postprocessing_seconds": 5.8523212999571115,
+  "evaluated_at_utc": "2026-10-12T03:29:06.010605+00:00"
+}

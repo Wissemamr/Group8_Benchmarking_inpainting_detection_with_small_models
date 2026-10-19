@@ -1,0 +1,18 @@
+{
+  "category": "bear",
+  "source_id": "79144",
+  "image_path": "C:\\Users\\PC CABA DZ\\DRAIEVAL\\Group8_Benchmarking_inpainting_detection_with_small_models\\ForMa\\data_tgif\\original\\testing\\bear\\79144_orig.png",
+  "image_name": "79144_orig.png",
+  "image_sha256": "943faa8a22fe4ecfdfae29e5b5c8a538f31625d61db4dc1219a8e3b959f753ed",
+  "subset": "authentic",
+  "mask_type": "none",
+  "variant": -1,
+  "y_true": 0,
+  "predicted_positive_pixels": 46728,
+  "total_pixels": 749568,
+  "area_score": 0.062339907786885244,
+  "pixel_threshold": 0.5,
+  "evaluation_id": "f849066fec192f997c0099176c05bdbf1539727b6feeae5c0b86ade0a7eb19a1",
+  "inference_and_postprocessing_seconds": 6.0446742998901755,
+  "evaluated_at_utc": "2026-10-12T03:17:10.458012+00:00"
+}

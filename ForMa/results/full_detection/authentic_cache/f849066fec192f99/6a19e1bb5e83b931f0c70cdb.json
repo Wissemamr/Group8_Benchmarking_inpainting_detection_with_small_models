@@ -1,0 +1,18 @@
+{
+  "category": "scissors",
+  "source_id": "368294",
+  "image_path": "C:\\Users\\PC CABA DZ\\DRAIEVAL\\Group8_Benchmarking_inpainting_detection_with_small_models\\ForMa\\data_tgif\\original\\testing\\scissors\\368294_orig.png",
+  "image_name": "368294_orig.png",
+  "image_sha256": "0ec911321293d036a7105fa14e98fbb55853c2e33d074c44930a0a8a000474a9",
+  "subset": "authentic",
+  "mask_type": "none",
+  "variant": -1,
+  "y_true": 0,
+  "predicted_positive_pixels": 65808,
+  "total_pixels": 697344,
+  "area_score": 0.09436949339207049,
+  "pixel_threshold": 0.5,
+  "evaluation_id": "f849066fec192f997c0099176c05bdbf1539727b6feeae5c0b86ade0a7eb19a1",
+  "inference_and_postprocessing_seconds": 6.644133299821988,
+  "evaluated_at_utc": "2026-10-12T03:24:00.974180+00:00"
+}

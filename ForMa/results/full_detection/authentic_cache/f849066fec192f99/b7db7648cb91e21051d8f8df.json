@@ -1,0 +1,18 @@
+{
+  "category": "zebra",
+  "source_id": "185409",
+  "image_path": "C:\\Users\\PC CABA DZ\\DRAIEVAL\\Group8_Benchmarking_inpainting_detection_with_small_models\\ForMa\\data_tgif\\original\\testing\\zebra\\185409_orig.png",
+  "image_name": "185409_orig.png",
+  "image_sha256": "b214f371b4969217b0a02e3f17d09f420fd2697ba2b9ebb0a98c9738b40b45d1",
+  "subset": "authentic",
+  "mask_type": "none",
+  "variant": -1,
+  "y_true": 0,
+  "predicted_positive_pixels": 59072,
+  "total_pixels": 694272,
+  "area_score": 0.08508480825958702,
+  "pixel_threshold": 0.5,
+  "evaluation_id": "f849066fec192f997c0099176c05bdbf1539727b6feeae5c0b86ade0a7eb19a1",
+  "inference_and_postprocessing_seconds": 7.189988800091669,
+  "evaluated_at_utc": "2026-10-12T03:41:50.559031+00:00"
+}

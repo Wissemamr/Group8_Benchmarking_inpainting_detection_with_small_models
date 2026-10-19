@@ -1,0 +1,177 @@
+{
+  "arguments": {
+    "category": "hair-drier",
+    "data_root": "C:\\Users\\PC CABA DZ\\DRAIEVAL\\Group8_Benchmarking_inpainting_detection_with_small_models\\ForMa\\data_tgif",
+    "output": "ForMa\\results\\sd2_smoke.xlsx",
+    "weights": "C:\\Users\\PC CABA DZ\\DRAIEVAL\\Group8_Benchmarking_inpainting_detection_with_small_models\\ForMa\\ForMa_weights\\ForMa_weights.pth",
+    "device": "cpu",
+    "input_size": 512,
+    "threshold": 0.5,
+    "threads": 4,
+    "limit": 1,
+    "subset": "sd2-sp",
+    "run_dir": "ForMa\\results\\sd2_smoke_runs",
+    "profile": true,
+    "check_only": false
+  },
+  "subset": "sd2-sp",
+  "category": "hair-drier",
+  "run_id": "20261008T063707Z_ddfcf1e0",
+  "started_at_utc": "2026-10-08T06:37:07.051132+00:00",
+  "status": "completed",
+  "profiled": true,
+  "code_sha256": {
+    "evaluate_tgif_category.py": "5e853533fdf7088730164b1796c30ca81365634d4cf608b9c0ebe5e087516c07",
+    "inference.py": "645108f27cb753f4b7a8dca96fe7c57b3fa329bb6295e4cfa2b8d82aa4e16b90",
+    "metrics.py": "47e20b937b50a60ac75c6703d622bebb2b5a5a9d6b8dab7d6608cae93c0d6969",
+    "run_stats.py": "4e6885a630d8bdc4ddadb14fdf01ab99bb20daee1bcd5643043f29b40c24b1d6",
+    "models\\__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "models\\csm_triton.py": "cb4ca223ce2afc09e7d11967dda06ff0d72ac9cd9cdc97ea55fdf57c450aaa2b",
+    "models\\csms6s.py": "b4cc9465e6420a2fc43e4d1b8e8d2f4deb4f2a73447a5734898bd7cf520d0519",
+    "models\\DnCNN_noiseprint.py": "ff151c95a932062da348794efa4f4a5963eebcf5cb654b98b98e85c72ff95ad7",
+    "models\\vmamba_pixelshuf_modals.py": "1b1b49eb8ac34624167113edc2e681d4ac636103daa93c90112a0b611960ff34"
+  },
+  "evaluation_id": "9f43220330ff2834a7cd149affc485523d2b29e285d9f08213db0cee5aedeb89",
+  "configuration": {
+    "protocol": "forma-sd2-sp-v1",
+    "checkpoint_sha256": "3c28719a48848411c4647e2460887d9a5d6eb64f2c3e3a77f5061c686925c2ee",
+    "input_size": 512,
+    "prediction_threshold": 0.5,
+    "ground_truth_threshold": 127,
+    "postprocessing": "class-1 softmax; nearest resize; strict greater-than thresholds",
+    "device": "cpu",
+    "threads": 4,
+    "torch_version": "2.7.1+cpu",
+    "profiling": "cProfile"
+  },
+  "selected_images": 1,
+  "skipped_images": 0,
+  "discovered_images": 12,
+  "parameter_count": 37255319,
+  "available_backends": {
+    "models.csms6s": {
+      "WITH_SELECTIVESCAN_CORE": false,
+      "WITH_SELECTIVESCAN_MAMBA": false,
+      "WITH_SELECTIVESCAN_OFLEX": false
+    },
+    "models.csm_triton": {
+      "WITH_TRITON": false
+    }
+  },
+  "error": null,
+  "completed_at_utc": "2026-10-08T06:38:03.939250+00:00",
+  "wall_seconds": 56.80838259984739,
+  "process_cpu_seconds": 83.765625,
+  "newly_saved_images": 1,
+  "saved_images_per_wall_second": 0.01760303592946662,
+  "forward_only_images_per_second": 0.06733998480891257,
+  "max_sampled_rss_bytes": 962199552,
+  "stages": {
+    "discovery": {
+      "count": 1,
+      "total_seconds": 0.00945290015079081,
+      "mean_seconds": 0.00945290015079081,
+      "median_seconds": 0.00945290015079081,
+      "p95_seconds": 0.00945290015079081,
+      "min_seconds": 0.00945290015079081,
+      "max_seconds": 0.00945290015079081
+    },
+    "read_workbook": {
+      "count": 1,
+      "total_seconds": 0.003083599964156747,
+      "mean_seconds": 0.003083599964156747,
+      "median_seconds": 0.003083599964156747,
+      "p95_seconds": 0.003083599964156747,
+      "min_seconds": 0.003083599964156747,
+      "max_seconds": 0.003083599964156747
+    },
+    "hashing_and_resume": {
+      "count": 1,
+      "total_seconds": 0.01968220015987754,
+      "mean_seconds": 0.01968220015987754,
+      "median_seconds": 0.01968220015987754,
+      "p95_seconds": 0.01968220015987754,
+      "min_seconds": 0.01968220015987754,
+      "max_seconds": 0.01968220015987754
+    },
+    "model_load": {
+      "count": 1,
+      "total_seconds": 24.418349399929866,
+      "mean_seconds": 24.418349399929866,
+      "median_seconds": 24.418349399929866,
+      "p95_seconds": 24.418349399929866,
+      "min_seconds": 24.418349399929866,
+      "max_seconds": 24.418349399929866
+    },
+    "warmup": {
+      "count": 1,
+      "total_seconds": 14.134382499847561,
+      "mean_seconds": 14.134382499847561,
+      "median_seconds": 14.134382499847561,
+      "p95_seconds": 14.134382499847561,
+      "min_seconds": 14.134382499847561,
+      "max_seconds": 14.134382499847561
+    },
+    "preprocessing": {
+      "count": 1,
+      "total_seconds": 0.08623229991644621,
+      "mean_seconds": 0.08623229991644621,
+      "median_seconds": 0.08623229991644621,
+      "p95_seconds": 0.08623229991644621,
+      "min_seconds": 0.08623229991644621,
+      "max_seconds": 0.08623229991644621
+    },
+    "device_transfer": {
+      "count": 1,
+      "total_seconds": 5.279993638396263e-05,
+      "mean_seconds": 5.279993638396263e-05,
+      "median_seconds": 5.279993638396263e-05,
+      "p95_seconds": 5.279993638396263e-05,
+      "min_seconds": 5.279993638396263e-05,
+      "max_seconds": 5.279993638396263e-05
+    },
+    "forward": {
+      "count": 1,
+      "total_seconds": 14.850018199998885,
+      "mean_seconds": 14.850018199998885,
+      "median_seconds": 14.850018199998885,
+      "p95_seconds": 14.850018199998885,
+      "min_seconds": 14.850018199998885,
+      "max_seconds": 14.850018199998885
+    },
+    "postprocessing_and_metrics": {
+      "count": 1,
+      "total_seconds": 0.032026899978518486,
+      "mean_seconds": 0.032026899978518486,
+      "median_seconds": 0.032026899978518486,
+      "p95_seconds": 0.032026899978518486,
+      "min_seconds": 0.032026899978518486,
+      "max_seconds": 0.032026899978518486
+    },
+    "workbook_write": {
+      "count": 1,
+      "total_seconds": 1.1496159001253545,
+      "mean_seconds": 1.1496159001253545,
+      "median_seconds": 1.1496159001253545,
+      "p95_seconds": 1.1496159001253545,
+      "min_seconds": 1.1496159001253545,
+      "max_seconds": 1.1496159001253545
+    }
+  },
+  "python": "3.10.11",
+  "platform": "Windows-10-10.0.26200-SP0",
+  "processor": "Intel64 Family 6 Model 140 Stepping 1, GenuineIntel",
+  "logical_cpu_count": 8,
+  "packages": {
+    "torch": "2.7.1",
+    "numpy": "1.26.2",
+    "pandas": "2.3.1",
+    "Pillow": "11.3.0",
+    "opencv-python": "4.9.0.80",
+    "opencv-python-headless": "4.8.1.78",
+    "psutil": "5.9.6"
+  },
+  "timing_notes": "Invocation excludes interpreter/import startup and report export. Stages are non-overlapping; other orchestration remains in wall time. Throughput counts newly saved images only. Forward statistics are across images, not repeated same-image latency trials.",
+  "memory_notes": "RSS sampled at phase boundaries, not a continuous peak; includes the Python process, model and workbook. Null if psutil unavailable. CUDA allocator peaks, when present, cover the measured loop after warmup and exclude non-PyTorch allocations.",
+  "profile_notes": "cProfile measures Python calls and adds overhead; it is not a GPU kernel trace or a clean latency benchmark."
+}

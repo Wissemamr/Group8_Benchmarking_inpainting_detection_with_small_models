@@ -1,0 +1,36 @@
+{
+  "status": "complete",
+  "authentic_expected": 343,
+  "authentic_evaluated": 343,
+  "inpainted_evaluated": 4116,
+  "unique_test_images": 4459,
+  "image_threshold": 0.01,
+  "config": {
+    "checkpoint_sha256": "3c28719a48848411c4647e2460887d9a5d6eb64f2c3e3a77f5061c686925c2ee",
+    "input_size": 512,
+    "pixel_threshold": 0.5,
+    "device": "cpu",
+    "threads": 4,
+    "torch_version": "2.14.0+cpu",
+    "method": "original-full-resolution-area-v1",
+    "inference_sha256": "645108f27cb753f4b7a8dca96fe7c57b3fa329bb6295e4cfa2b8d82aa4e16b90",
+    "model_code_sha256": {
+      "__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "csm_triton.py": "cb4ca223ce2afc09e7d11967dda06ff0d72ac9cd9cdc97ea55fdf57c450aaa2b",
+      "csms6s.py": "b4cc9465e6420a2fc43e4d1b8e8d2f4deb4f2a73447a5734898bd7cf520d0519",
+      "DnCNN_noiseprint.py": "ff151c95a932062da348794efa4f4a5963eebcf5cb654b98b98e85c72ff95ad7",
+      "vmamba_pixelshuf_modals.py": "1b1b49eb8ac34624167113edc2e681d4ac636103daa93c90112a0b611960ff34"
+    }
+  },
+  "original_choice": "One uncropped <source>_orig.png per source; dimensions matched to both manipulated subsets.",
+  "negatives": "Authentic images counted once overall; the same negatives reused for each separate generator comparison.",
+  "score": "Fraction of pixels whose class-1 probability exceeds saved pixel threshold; not calibrated probability.",
+  "threshold_provenance": "Fixed previous user operating point; not tuned on these test data.",
+  "runtime_seconds": 1891.3904473001603,
+  "source_workbook_sha256": "0c4387d6d20a9757061da2eed9d49d331f3cc50c5e7f8e81879d875de8e07787",
+  "manipulated_evaluation_ids": [
+    "bce894a835eecfa44c2cea8272f14c3ba7bfb64ba11efcd5d1c4544c4d29b7b0",
+    "bd5b2f0d76759cb101333c655ca249a21a5db2ed7e1c76efe640a8831251c10a"
+  ],
+  "limitations": "Imbalanced test prevalence; compare balanced accuracy and ROC-AUC alongside accuracy. Source-related variants are correlated. No confidence intervals. Authentic inference uses matching checkpoint, torch version and settings; historical full environment provenance is unavailable."
+}

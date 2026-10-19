@@ -5,7 +5,6 @@ __pycache__/
 *$py.class
 # Downloaded model weights and generated evaluation outputs
 /ForMa/ForMa_weights/
-/ForMa/results/
 # C extensions
 *.so
 

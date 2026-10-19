@@ -1,0 +1,18 @@
+{
+  "category": "kite",
+  "source_id": "426836",
+  "image_path": "C:\\Users\\PC CABA DZ\\DRAIEVAL\\Group8_Benchmarking_inpainting_detection_with_small_models\\ForMa\\data_tgif\\original\\testing\\kite\\426836_orig.png",
+  "image_name": "426836_orig.png",
+  "image_sha256": "d612f6f7715f3e4cc64e59f6b570a4c0c6cf82886e4b6ae9df6d31e67e7e8a57",
+  "subset": "authentic",
+  "mask_type": "none",
+  "variant": -1,
+  "y_true": 0,
+  "predicted_positive_pixels": 10560,
+  "total_pixels": 1048576,
+  "area_score": 0.01007080078125,
+  "pixel_threshold": 0.5,
+  "evaluation_id": "f849066fec192f997c0099176c05bdbf1539727b6feeae5c0b86ade0a7eb19a1",
+  "inference_and_postprocessing_seconds": 3.5076355999335647,
+  "evaluated_at_utc": "2026-10-12T03:22:22.270862+00:00"
+}

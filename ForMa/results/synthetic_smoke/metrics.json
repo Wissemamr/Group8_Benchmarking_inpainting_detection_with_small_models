@@ -1,0 +1,50 @@
+{
+  "image": "C:\\Users\\PC CABA DZ\\DRAIEVAL\\Group8_Benchmarking_inpainting_detection_with_small_models\\ForMa\\results\\synthetic_smoke\\synthetic_image.png",
+  "image_sha256": "ae2dc0f7a22281337e135d89a2419bfb94d20578fd2097b4c5c6a523ba3f819d",
+  "mask": "C:\\Users\\PC CABA DZ\\DRAIEVAL\\Group8_Benchmarking_inpainting_detection_with_small_models\\ForMa\\results\\synthetic_smoke\\synthetic_mask.png",
+  "mask_sha256": "090618b10f658e3a300939007ca064fcff89a1bba880c97326cf8b6b2431df96",
+  "weights": "C:\\Users\\PC CABA DZ\\DRAIEVAL\\Group8_Benchmarking_inpainting_detection_with_small_models\\ForMa\\ForMa_weights\\ForMa_weights.pth",
+  "weights_sha256": "3c28719a48848411c4647e2460887d9a5d6eb64f2c3e3a77f5061c686925c2ee",
+  "device": "cpu",
+  "torch_version": "1.13.1+cu117",
+  "numpy_version": "1.26.4",
+  "opencv_version": "4.11.0",
+  "threads": 4,
+  "input_size": 512,
+  "original_size": [
+    256,
+    192
+  ],
+  "output_shape": [
+    1,
+    2,
+    128,
+    128
+  ],
+  "threshold": 0.5,
+  "foreground_class": 1,
+  "preprocessing": "RGB; OpenCV INTER_LINEAR square resize; float32 / 255",
+  "postprocessing": "class-1 softmax > threshold; nearest resize to original resolution",
+  "forward_seconds": 6.1246797000057995,
+  "timing_note": "Single cold forward; excludes loading, preprocessing and saving.",
+  "parameters": 37255319,
+  "metrics": {
+    "tp": 12286,
+    "fp": 0,
+    "fn": 2,
+    "tn": 36864,
+    "iou": 0.9998372395833334,
+    "dice": 0.9999186131683894,
+    "pixel_f1": 0.9999186131683894,
+    "precision": 1.0,
+    "recall": 0.9998372395833334,
+    "specificity": 1.0,
+    "pixel_accuracy": 0.9999593098958334
+  },
+  "available_backends": {
+    "triton": false,
+    "selective_scan_oflex": false,
+    "selective_scan_core": false,
+    "selective_scan_mamba": false
+  }
+}

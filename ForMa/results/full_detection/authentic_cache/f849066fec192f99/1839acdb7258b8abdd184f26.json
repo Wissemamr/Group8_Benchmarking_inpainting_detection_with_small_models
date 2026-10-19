@@ -1,0 +1,18 @@
+{
+  "category": "hair-drier",
+  "source_id": "350002",
+  "image_path": "C:\\Users\\PC CABA DZ\\DRAIEVAL\\Group8_Benchmarking_inpainting_detection_with_small_models\\ForMa\\data_tgif\\original\\testing\\hair drier\\350002_orig.png",
+  "image_name": "350002_orig.png",
+  "image_sha256": "43e3c73a1aa08f5c66d5c6a1f88272671533ad6426608e804de968c73684c8ee",
+  "subset": "authentic",
+  "mask_type": "none",
+  "variant": -1,
+  "y_true": 0,
+  "predicted_positive_pixels": 14776,
+  "total_pixels": 699392,
+  "area_score": 0.02112692166910688,
+  "pixel_threshold": 0.5,
+  "evaluation_id": "f849066fec192f997c0099176c05bdbf1539727b6feeae5c0b86ade0a7eb19a1",
+  "inference_and_postprocessing_seconds": 5.7200423998292536,
+  "evaluated_at_utc": "2026-10-12T03:20:40.605725+00:00"
+}

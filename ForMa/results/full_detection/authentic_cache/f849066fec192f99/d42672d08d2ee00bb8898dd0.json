@@ -1,0 +1,18 @@
+{
+  "category": "sports-ball",
+  "source_id": "190236",
+  "image_path": "C:\\Users\\PC CABA DZ\\DRAIEVAL\\Group8_Benchmarking_inpainting_detection_with_small_models\\ForMa\\data_tgif\\original\\testing\\sports ball\\190236_orig.png",
+  "image_name": "190236_orig.png",
+  "image_sha256": "e3c25be0f389a812b637ae5dab8036869776433eddfcf568fc15e36adfc91a96",
+  "subset": "authentic",
+  "mask_type": "none",
+  "variant": -1,
+  "y_true": 0,
+  "predicted_positive_pixels": 22152,
+  "total_pixels": 643072,
+  "area_score": 0.034447153662420384,
+  "pixel_threshold": 0.5,
+  "evaluation_id": "f849066fec192f997c0099176c05bdbf1539727b6feeae5c0b86ade0a7eb19a1",
+  "inference_and_postprocessing_seconds": 5.3906760001555085,
+  "evaluated_at_utc": "2026-10-12T03:33:08.939770+00:00"
+}

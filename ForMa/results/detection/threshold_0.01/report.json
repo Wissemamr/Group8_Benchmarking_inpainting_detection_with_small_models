@@ -1,0 +1,23 @@
+{
+  "method": "predicted manipulated-area fraction from saved binary masks",
+  "formula": "(pixel_tp + pixel_fp) / (pixel_tp + pixel_fp + pixel_fn + pixel_tn)",
+  "image_threshold": 0.01,
+  "comparison": "strictly greater than",
+  "pixel_threshold": 0.5,
+  "images": 4116,
+  "sources": 343,
+  "categories": 13,
+  "generator_counts": {
+    "PS-sp": 2058,
+    "SD2-sp": 2058
+  },
+  "evaluation_ids": [
+    "bce894a835eecfa44c2cea8272f14c3ba7bfb64ba11efcd5d1c4544c4d29b7b0",
+    "bd5b2f0d76759cb101333c655ca249a21a5db2ed7e1c76efe640a8831251c10a"
+  ],
+  "workbook": "C:\\Users\\PC CABA DZ\\DRAIEVAL\\Group8_Benchmarking_inpainting_detection_with_small_models\\ForMa\\results\\results_excel.xlsx",
+  "limitation": "Manipulated-only evaluation. Only sensitivity/recall is reported. Authentic images are required for false-positive rate, specificity, balanced accuracy, ROC-AUC and meaningful two-class precision/F1/accuracy.",
+  "threshold_provenance": "User-supplied; not calibrated by this script. Choose on independent validation data with both classes.",
+  "score_interpretation": "Fraction of predicted-positive pixels, not a calibrated image-level probability.",
+  "coverage": "Includes saved rows only; check generator/category counts against intended test inventory."
+}

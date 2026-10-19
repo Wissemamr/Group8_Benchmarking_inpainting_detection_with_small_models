@@ -1,0 +1,18 @@
+{
+  "category": "stop-sign",
+  "source_id": "225946",
+  "image_path": "C:\\Users\\PC CABA DZ\\DRAIEVAL\\Group8_Benchmarking_inpainting_detection_with_small_models\\ForMa\\data_tgif\\original\\testing\\stop sign\\225946_orig.png",
+  "image_name": "225946_orig.png",
+  "image_sha256": "4e5597ad6f22fc37f94e9b3a1e7500b8b865841160327acc91c12e95ce95992c",
+  "subset": "authentic",
+  "mask_type": "none",
+  "variant": -1,
+  "y_true": 0,
+  "predicted_positive_pixels": 52416,
+  "total_pixels": 758784,
+  "area_score": 0.06907894736842106,
+  "pixel_threshold": 0.5,
+  "evaluation_id": "f849066fec192f997c0099176c05bdbf1539727b6feeae5c0b86ade0a7eb19a1",
+  "inference_and_postprocessing_seconds": 5.114699200028554,
+  "evaluated_at_utc": "2026-10-12T03:35:37.560276+00:00"
+}

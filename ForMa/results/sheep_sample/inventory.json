@@ -1,0 +1,50 @@
+{
+  "images": 2058,
+  "masks": 3428,
+  "images_per_category": {
+    "airplane": 168,
+    "bear": 120,
+    "elephant": 210,
+    "hair drier": 12,
+    "kite": 186,
+    "scissors": 54,
+    "sheep": 168,
+    "skis": 264,
+    "snowboard": 120,
+    "sports ball": 132,
+    "stop sign": 120,
+    "tennis racket": 282,
+    "zebra": 222
+  },
+  "masks_per_category": {
+    "airplane": 278,
+    "bear": 200,
+    "elephant": 350,
+    "hair drier": 20,
+    "kite": 310,
+    "scissors": 90,
+    "sheep": 280,
+    "skis": 440,
+    "snowboard": 200,
+    "sports ball": 220,
+    "stop sign": 200,
+    "tennis racket": 470,
+    "zebra": 370
+  },
+  "source_ids_per_category": {
+    "airplane": 28,
+    "bear": 20,
+    "elephant": 35,
+    "hair drier": 2,
+    "kite": 31,
+    "scissors": 9,
+    "sheep": 28,
+    "skis": 44,
+    "snowboard": 20,
+    "sports ball": 22,
+    "stop sign": 20,
+    "tennis racket": 47,
+    "zebra": 37
+  },
+  "missing_adapted_masks": []
+}

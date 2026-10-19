@@ -1,0 +1,18 @@
+{
+  "category": "airplane",
+  "source_id": "293324",
+  "image_path": "C:\\Users\\PC CABA DZ\\DRAIEVAL\\Group8_Benchmarking_inpainting_detection_with_small_models\\ForMa\\data_tgif\\original\\testing\\airplane\\293324_orig.png",
+  "image_name": "293324_orig.png",
+  "image_sha256": "2c1e89a0eefe29e3ca50e126ec57155b542de62ac1bfd07ad3b8fffadd033a13",
+  "subset": "authentic",
+  "mask_type": "none",
+  "variant": -1,
+  "y_true": 0,
+  "predicted_positive_pixels": 2480,
+  "total_pixels": 664576,
+  "area_score": 0.0037317026194144836,
+  "pixel_threshold": 0.5,
+  "evaluation_id": "f849066fec192f997c0099176c05bdbf1539727b6feeae5c0b86ade0a7eb19a1",
+  "inference_and_postprocessing_seconds": 4.505303800106049,
+  "evaluated_at_utc": "2026-10-12T03:14:17.850925+00:00"
+}

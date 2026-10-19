@@ -1,0 +1,18 @@
+{
+  "category": "tennis-racket",
+  "source_id": "271402",
+  "image_path": "C:\\Users\\PC CABA DZ\\DRAIEVAL\\Group8_Benchmarking_inpainting_detection_with_small_models\\ForMa\\data_tgif\\original\\testing\\tennis racket\\271402_orig.png",
+  "image_name": "271402_orig.png",
+  "image_sha256": "9b039a2fd12a25852859f6fd630247403ec7a9d11e6dfc56ae0473c68cc00456",
+  "subset": "authentic",
+  "mask_type": "none",
+  "variant": -1,
+  "y_true": 0,
+  "predicted_positive_pixels": 61256,
+  "total_pixels": 694272,
+  "area_score": 0.0882305494100295,
+  "pixel_threshold": 0.5,
+  "evaluation_id": "f849066fec192f997c0099176c05bdbf1539727b6feeae5c0b86ade0a7eb19a1",
+  "inference_and_postprocessing_seconds": 6.441492000129074,
+  "evaluated_at_utc": "2026-10-12T03:38:02.522279+00:00"
+}

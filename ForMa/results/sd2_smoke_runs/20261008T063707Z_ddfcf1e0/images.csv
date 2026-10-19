@@ -1,0 +1,2 @@
+sample_key,image_name,mask_type,preprocessing_seconds,device_transfer_seconds,forward_seconds,postprocessing_and_metrics_seconds,workbook_write_seconds,wall_seconds
+2e098be29865d162e973a4da70ece048d88acaa9f1f86b5217d3b7868e6da7d7,350002_mask_bbox.png_ps_mask.png_sd2_0.png,bbox,0.08623229991644621,5.279993638396263e-05,14.850018199998885,0.032026899978518486,1.1496159001253545,16.132434599800035
