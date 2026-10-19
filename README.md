@@ -25,7 +25,7 @@ Our objective is to evaluate several architectures under a common experimental p
 
 * Detection performance
 * Localization performance
-* Generalization across datasets
+* Performance across the two inpainting generators
 * Computational efficiency
 
 ### Research Question
@@ -130,174 +130,43 @@ The predicted localization mask is compared against the ground-truth manipulatio
 
 ---
 
-## 5. Datasets
+## 5. Dataset: TGIF testing split
 
-The benchmark uses datasets specifically designed for the detection and localization of **AI-generated image inpainting**. The datasets are selected based on their scale, diversity of inpainting methods, availability of manipulation masks, and relevance to recent image-forensics research.
+The benchmark evaluates **TGIF (Text-Guided Inpainting Forgery)** testing images: authentic MS-COCO originals and their inpainted versions from **Photoshop / Firefly (PS-sp)** and **Stable Diffusion 2 (SD2-sp)**. The SP images preserve the original content outside the selected inpainting region. Ground-truth masks identify the manipulated pixels.
 
-### 5.1 TGIF — Text-Guided Inpainting Forgery Dataset
+* [Official TGIF repository](https://github.com/IDLabMedia/tgif-dataset)
+* [Dataset download](https://cloud.ilabt.imec.be/index.php/s/xEeAzrY7ES9KA8o)
+* [TGIF paper](https://arxiv.org/abs/2407.11566)
 
-**Official repository:**
-https://github.com/IDLabMedia/tgif-dataset
+### Evaluated subset
 
-**Download:**
-https://cloud.ilabt.imec.be/index.php/s/xEeAzrY7ES9KA8o
+The full evaluation inventory contains **4,459 images across 13 categories**, derived from **343 source images**:
 
-**Original paper:**
-[TGIF: Text-Guided Inpainting Forgery Dataset](https://arxiv.org/abs/2407.11566)
+| Subset | Images | Detection label |
+| --- | ---: | --- |
+| Authentic originals | 343 | Authentic (0) |
+| Photoshop / Firefly (PS-sp) | 2,058 | Inpainted (1) |
+| Stable Diffusion 2 (SD2-sp) | 2,058 | Inpainted (1) |
+| **Total** | **4,459** | **343 authentic + 4,116 inpainted** |
 
-TGIF (*Text-Guided Inpainting Forgery*) is a large-scale dataset specifically designed for studying the detection and localization of **text-guided image inpainting forgeries**.
+Each generator contributes two mask types (bounding box and segmentation) and three variants per source image. Authentic originals are counted once in the combined inventory. Localization is evaluated on manipulated images with ground-truth masks; the full manipulated subset contains **4,116 images**.
 
-The dataset contains authentic images originating from **MS-COCO** and corresponding manipulated images generated using several text-guided inpainting methods, including:
+Categories: airplane, bear, elephant, hair-drier, kite, scissors, sheep, skis, snowboard, sports-ball, stop-sign, tennis-racket, and zebra.
 
-* **Stable Diffusion 2 (SD2)**
-* **Stable Diffusion XL (SDXL)**
-* **Adobe Firefly**
-
-The authentic images are sourced from **MS-COCO** and are distributed under the **CC BY 4.0** license. Images have resolutions of up to **1024 × 1024 pixels**.
-
-For each manipulation, TGIF can provide information about the manipulated region, making it suitable for both:
-
-1. **Image-level inpainting detection**
-2. **Pixel-level inpainting localization**
-
-#### Manipulation Types
-
-TGIF provides two representations of the generated content, when available:
-
-* **SP (Spliced/Partial):** the original image in which only the selected region has been replaced through inpainting.
-* **FR (Fully Regenerated):** a fully regenerated version of the image produced through the corresponding generative process.
-
-The **SP** version is particularly relevant to our benchmark because it directly represents the typical inpainting scenario: a localized region of an otherwise authentic image has been synthetically modified.
-
----
-
-### TGIF2 Extension
-
-The original TGIF dataset was subsequently extended through **TGIF2: Extended Text-Guided Inpainting Forgery Dataset & Benchmark**.
-
-TGIF2 adds approximately **196K new manipulated images**, substantially increasing the scale and diversity of the benchmark.
-
-This extension allows us to investigate whether models trained on a large and diverse collection of inpainting manipulations can generalize across different image-generation methods and manipulation distributions.
-
----
-
-### Dataset Statistics
-
-The following table summarizes the splits used in our benchmark.
-
-| Dataset                             | Training | Validation | Testing |       Total |
-| ----------------------------------- | -------: | ---------: | ------: | ----------: |
-| **Authentic images**                |    2,440 |        341 |     343 |   **3,124** |
-| **TGIF manipulated images**         |   58,560 |      8,184 |   8,232 |  **74,976** |
-| **TGIF2 manipulated images**        |  153,720 |     21,483 |  21,609 | **196,812** |
-| **TGIF + TGIF2 manipulated images** |  212,280 |     29,667 |  29,841 | **271,788** |
-
-The resulting benchmark therefore contains a substantial number of manipulated samples, with TGIF and TGIF2 providing complementary manipulation data.
-
----
-
-### Why TGIF Was Selected
-
-TGIF was selected as one of the benchmark datasets for several reasons:
-
-#### 1. Large-scale dataset
-
-TGIF provides nearly **75K manipulated images**, while the TGIF2 extension adds approximately **197K additional manipulated images**. This makes the combined dataset sufficiently large for training and comparing multiple models.
-
-#### 2. Diversity of generative methods
-
-The dataset contains manipulations generated using different text-guided inpainting systems, including **SD2, SDXL, and Adobe Firefly**. This diversity is important for evaluating whether models learn generalizable traces of inpainting rather than artifacts specific to a single generation method.
-
-#### 3. Relevance to our research question
-
-Unlike datasets focused only on generic image manipulation, TGIF specifically targets **text-guided inpainting forgeries**, which directly matches the scope of our research question.
-
-#### 4. Detection and localization
-
-The dataset provides information about the manipulated regions, allowing us to evaluate both:
-
-* **Detection:** whether an image contains an inpainting manipulation.
-* **Localization:** whether the model can identify the manipulated pixels.
-
-This makes TGIF particularly suitable for our two-task benchmark.
-
-#### 5. Recent and established benchmark
-
-TGIF was introduced in a peer-reviewed information-forensics context and subsequently extended through **TGIF2**, providing a recent and substantially larger benchmark for text-guided inpainting forgery detection and localization.
-
-
-
-> **Note:** The exact subset, split strategy, preprocessing, and whether TGIF2 is included in the training or evaluation set will be specified in the experimental protocol to ensure a fair comparison between all models.
-
-
-### SAGI-D
-
-[Dataset description to be added]
-
-For each dataset, we document:
-
-* Number of images
-* Authentic/manipulated image distribution
-* Availability of ground-truth masks
-* Image resolution
-* Inpainting generation process
-* Train/validation/test splits
-
-The datasets are used under a common evaluation protocol to enable a controlled comparison between the selected models.
+The tables below reproduce the supplied project summary. Model-specific resampling, authentic-image selection, thresholds, and metric aggregation differ; see the results notes before interpreting them as a controlled comparison.
 
 ---
 
 ## 6. Selected Models
 
-We selected models representing different architectural families used for image manipulation detection and localization.
+The final comparison includes **four models: TruFor, PSCC-Net, ForMa, and AEROBLADE**.
 
-### 6.1 ForMa
-
-**Architecture:** State Space Model (SSM) / Mamba-based architecture
-
-ForMa is based on the Mamba/VMamba family of state-space models and is designed for image manipulation localization.
-
-**Category:** SSM / Mamba-based
-
----
-
-### 6.2 PSCC-Net
-
-**Architecture:** Convolutional Neural Network (CNN)
-
-PSCC-Net is a CNN-based approach for image manipulation detection and localization.
-
-**Category:** CNN-based
-
----
-
-### 6.3 SegFormer-B1
-
-**Architecture:** Transformer
-
-SegFormer is a lightweight Transformer-based architecture originally developed for semantic segmentation. The B1 variant is considered a relatively compact configuration.
-
-**Category:** Transformer-based
-
----
-
-### 6.4 AeroBlade
-
-**Architecture:** Diffusion-based
-
-AeroBlade uses diffusion-model-related representations for detecting synthetic image manipulations.
-
-**Category:** Diffusion-based
-
----
-
-### 6.5 ObjectFormer
-
-**Architecture:** Frequency-domain / Transformer-based
-
-ObjectFormer exploits frequency-related information for image manipulation analysis.
-
-**Category:** Frequency-based
+| Model | Approach and role | Implementation and evaluation details |
+| --- | --- | --- |
+| **TruFor** | Pretrained image-forensics model producing an image-level detection score and a pixel-level anomaly map. A larger reference model (68.7 M parameters), outside the project's <10 M small-model criterion. | [TruFor documentation](TruFor/README.md) |
+| **PSCC-Net** | CNN-based manipulation detection and localization; 3.67 M parameters. Official pretrained weights evaluated without TGIF fine-tuning. | [PSCC-Net documentation](PSCC-Net/README.md) |
+| **ForMa** | Mamba/VMamba state-space model for manipulation localization. Binary detection is derived from the fraction of pixels predicted as manipulated. | [ForMa methodology](ForMa/forma.md) and [usage](ForMa/README.md) |
+| **AEROBLADE** | Training-free detection using autoencoder reconstruction error. This benchmark uses the SD2 autoencoder and a spatial error map for localization. | [AEROBLADE documentation](AEROBLADE/README.md) |
 
 ---
 
@@ -308,30 +177,17 @@ The central principle of our benchmark is to evaluate the selected models under 
 The general pipeline is:
 
 ```text
-                 Dataset
-                    │
-                    ▼
-             Preprocessing
-                    │
-          ┌─────────┴─────────┐
-          ▼                   ▼
-        ForMa              PSCC-Net
-          │                   │
-          ├───────┬───────────┤
-          │       │           │
-          ▼       ▼           ▼
-       Detection Localization
-          │       │
-          ▼       ▼
-       Classification  Segmentation
-         Metrics         Metrics
-          │       │
-          └───────┴──────────┐
-                             ▼
-                    Model Comparison
-                             │
-                             ▼
-                  Performance + Efficiency
+TGIF testing images (authentic + PS-sp + SD2-sp)
+                        |
+             Model-specific preprocessing
+                        |
+       TruFor / PSCC-Net / ForMa / AEROBLADE
+                        |
+          Detection scores + localization maps
+                        |
+          Classification + pixel-level metrics
+                        |
+                 Model comparison
 ```
 
 Whenever possible, models are evaluated using:
@@ -359,23 +215,9 @@ We compare:
 * Detection: F1, ROC-AUC, Precision, Recall, Accuracy
 * Localization: IoU, Dice, Pixel-wise F1, Precision, Recall
 
-### 8.2 Generalization
+### 8.2 Generator, Category, and Mask-Type Analysis
 
-Where possible, models are evaluated both **in-domain** and **across datasets**.
-
-For example:
-
-```text
-Training Dataset A
-       │
-       ├──────────► Test Dataset A
-       │
-       ├──────────► Test Dataset B
-       │
-       └──────────► Test Dataset C
-```
-
-Cross-dataset evaluation allows us to investigate whether models generalize beyond the specific distribution on which they were trained.
+The repository reports performance across Photoshop / Firefly and Stable Diffusion 2, the 13 object categories, and bounding-box versus segmentation masks. Model-specific documentation and result files describe these breakdowns and any resampling used.
 
 ### 8.3 Computational Efficiency
 
@@ -385,7 +227,7 @@ We record, where applicable:
 
 * Number of parameters
 * FLOPs / computational cost
-* Model size
+* Throughput
 * Inference latency
 * Peak memory usage
 
@@ -400,7 +242,6 @@ To ensure reproducibility, the repository documents:
 * Dataset preparation
 * Data splits
 * Preprocessing
-* Training configuration
 * Hyperparameters
 * Model checkpoints
 * Evaluation procedures
@@ -412,67 +253,86 @@ All reported benchmark results should be generated using the scripts provided in
 ---
 
 
-## 13. Results
+## 10. Results
 
-The final benchmark will report results using a common format.
+The following values reproduce the supplied project summary on a 0-1 scale, combining categories and both generators. They are descriptive point estimates; confidence intervals are not supplied here. The full test inventory has 4,459 images, but individual reported runs and aggregations differ as detailed below.
 
 ### Detection
 
-| Model        | Accuracy | Precision | Recall | F1 | ROC-AUC |
-| ------------ | -------: | --------: | -----: | -: | ------: |
-| ForMa        |        — |         — |      — |  — |       — |
-| PSCC-Net     |        — |         — |      — |  — |       — |
-| SegFormer-B1 |        — |         — |      — |  — |       — |
-| AeroBlade    |        — |         — |      — |  — |       — |
-| ObjectFormer |        — |         — |      — |  — |       — |
+Positive class: **inpainted**. Detection requires both authentic and manipulated images.
+
+| Metric | TruFor | PSCC-Net | ForMa | AEROBLADE | Always "fake" baseline |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Accuracy | 0.95 | 0.66 | 0.77 | 0.57 | 0.92 |
+| Precision | 0.98 | 0.86 | 0.93 | 0.92 | 0.92 |
+| Recall | 0.96 | 0.69 | 0.82 | 0.59 | 1.00 |
+| F1 | 0.97 | 0.76 | 0.87 | 0.70 | 0.96 |
+| ROC-AUC | 0.97 | 0.61 | 0.48 | 0.51 | 0.50 |
+
+The full inventory is **92.31% manipulated**. Predicting "fake" for every image therefore achieves approximately 0.92 accuracy and 0.96 F1 without distinguishing authentic images. Interpret precision and F1 alongside ROC-AUC and, where available, specificity and balanced accuracy.
 
 ### Localization
 
-| Model        | Pixel Precision | Pixel Recall | Pixel F1 | Dice | IoU |
-| ------------ | --------------: | -----------: | -------: | ---: | --: |
-| ForMa        |               — |            — |        — |    — |   — |
-| PSCC-Net     |               — |            — |        — |    — |   — |
-| SegFormer-B1 |               — |            — |        — |    — |   — |
-| AeroBlade    |               — |            — |        — |    — |   — |
-| ObjectFormer |               — |            — |        — |    — |   — |
+Pixel-level scores compare predicted manipulation masks with the ground truth. Authentic images are excluded from the localization evaluations described in the model documentation.
+
+| Metric | TruFor | PSCC-Net | ForMa | AEROBLADE | Coin-flip baseline |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| IoU | 0.72 | 0.33 | 0.21 | 0.07 | 0.06 |
+| Dice | 0.87 | 0.41 | 0.29 | 0.13 | 0.10 |
+| Pixel precision | 0.93 | 0.46 | 0.41 | 0.08 | 0.06 |
+| Pixel recall | 0.82 | 0.48 | 0.30 | 0.70 | 0.50 |
+
+The coin-flip figures are the supplied comparison baseline, not a fifth model. Its sampling procedure and random seed are not specified in the supplied summary.
+
+### Traceability and comparison limits
+
+These tables preserve the supplied presentation values. They should not be described as identical-protocol, full-dataset macro results:
+
+* **TruFor:** its [documented results](TruFor/README.md) are means over three shared resamples, each with 3,575 detection images and 3,300 manipulated localization images. The supplied localization row combines macro IoU (0.7215) with pooled Dice (0.8736), precision (0.9329), and recall (0.8214). The consistent macro alternative is IoU **0.7215**, Dice **0.8162**, precision **0.9178**, and recall **0.7678**.
+* **PSCC-Net:** the supplied detection precision, F1, and AUC correspond approximately to the documented protocol including original, 512-pixel, and 1024-pixel authentic versions. With original authentic images only, its three-resample means are accuracy **0.6566**, precision **0.9243**, recall **0.6840**, F1 **0.7862**, and ROC-AUC **0.4976**. See the [protocol comparison](PSCC-Net/README.md). Localization uses a 0.2 mask threshold and macro averaging.
+* **ForMa:** detection uses all **4,459 images**, a pixel probability threshold strictly greater than 0.5, and an image manipulated-area threshold strictly greater than 0.01. The stored detection precision is **0.9227** (0.92 rounded to two decimals), whereas the supplied summary states **0.93**. Localization averages per-image metrics over **4,116 manipulated images**. See [ForMa methodology and results](ForMa/forma.md).
+* **AEROBLADE:** the benchmark uses the SD2 autoencoder only, with detection threshold calibration by source-level cross-fitting for the full run. Localization headline metrics are per-image macro averages. See [AEROBLADE protocol](AEROBLADE/README.md).
+
+A final standardized ranking requires the same image IDs, authentic-image selection, aggregation, and threshold-selection policy for every model. The supplied summary values above have not been recomputed to impose that protocol.
 
 ### Efficiency
 
-| Model        | Parameters | FLOPs | Model Size | Latency | Peak Memory |
-| ------------ | ---------: | ----: | ---------: | ------: | ----------: |
-| ForMa        |          — |     — |          — |       — |           — |
-| PSCC-Net     |          — |     — |          — |       — |           — |
-| SegFormer-B1 |          — |     — |          — |       — |           — |
-| AeroBlade    |          — |     — |          — |       — |           — |
-| ObjectFormer |          — |     — |          — |       — |           — |
+The following measurements reproduce the supplied GPU efficiency summary. Latency is reported per image, with both median and mean values. Full-test durations are estimates for **4,459 images**, not measured end-to-end completion times.
+
+| Model | Parameters | GFLOPs / image | GPU latency / image, median (mean) | Throughput | Peak RAM | Peak GPU memory | Estimated full TGIF test (4,459 images) |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| AEROBLADE | 98.4 M | 3,841 | 891 ms (833 ms) | 1.20 images/s | 1,160 MiB | 1,351 MiB | ~62 min |
+| TruFor | 68.7 M | 1,255 | 872 ms (836 ms) | 1.20 images/s | 992 MiB | 2,395 MiB | ~62 min |
+| ForMa | 37.3 M | Not reported | 11,628 ms (11,659 ms) | 0.09 images/s | 1,679 MiB | 446 MiB | ~14.4 h |
+| PSCC-Net | 3.7 M | 542 | 856 ms (897 ms) | 1.12 images/s | 2,796 MiB | 2,527 MiB | ~67 min |
+
+Estimated total time is `4,459 * mean latency per image`. Throughput is rounded, so dividing the image count by the displayed throughput can produce a different estimate. ForMa's GFLOPs were not supplied. The summary does not specify GPU model, batch size, warm-up, or timing boundaries; consult the model-specific profiling records before treating these measurements as a hardware-controlled speed ranking.
 
 ---
 
-## 14. Project Scope
+## 11. Project Scope
 
 This project focuses on **benchmarking and comparative evaluation**, rather than proposing a new model architecture.
 
 The main objective is to establish a controlled experimental framework in which different small architectures can be compared under common conditions.
 
-The final analysis will consider:
+The reported comparison covers:
 
 * Detection performance
 * Localization accuracy
-* Cross-dataset generalization
+* Performance across Photoshop / Firefly and Stable Diffusion 2
 * Computational efficiency
 * Performance–efficiency trade-offs
 
 ---
 
-## 15. References
+## 12. References
 
 The implementation and evaluation of each model are based on the corresponding original publications and official implementations.
 
-References and links to the original papers and repositories will be provided here:
+Model-specific documentation links to the original publications, implementations, and evaluation procedures:
 
-* **ForMa** — [Paper / Official Repository]
-* **PSCC-Net** — [Paper / Official Repository]
-* **SegFormer** — [Paper / Official Repository]
-* **AeroBlade** — [Paper / Official Repository]
-* **ObjectFormer** — [Paper / Official Repository]
-
+* **TruFor** - [model documentation](TruFor/README.md)
+* **PSCC-Net** - [model documentation](PSCC-Net/README.md)
+* **ForMa** - [model documentation](ForMa/README.md), [evaluation methodology](ForMa/forma.md)
+* **AEROBLADE** - [model documentation](AEROBLADE/README.md)
